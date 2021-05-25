@@ -32,12 +32,12 @@ typedef struct micro_ros_utilities_memory_rule_t
 
 typedef struct micro_ros_utilities_memory_conf_t
 {
-    size_t max_string_capacity;
-    size_t max_ros2_type_sequence;
-    size_t max_basic_type_sequence;
-    size_t n_rules;
-    const micro_ros_utilities_memory_rule_t * rules;
-    const rcutils_allocator_t * allocator;
+  size_t max_string_capacity;
+  size_t max_ros2_type_sequence;
+  size_t max_basic_type_sequence;
+  size_t n_rules;
+  const micro_ros_utilities_memory_rule_t * rules;
+  const rcutils_allocator_t * allocator;
 } micro_ros_utilities_memory_conf_t;
 
 extern const micro_ros_utilities_memory_conf_t memory_conf_default;
@@ -58,11 +58,22 @@ extern const micro_ros_utilities_memory_conf_t memory_conf_default;
  * \return `RCL_RET_OK` if the \p parameter_server was initialized successfully
  */
 
-rosidl_runtime_c__String micro_ros_utilities_type_info(const rosidl_message_type_support_t* type_support);
-size_t micro_ros_utilities_get_dynamic_size(const rosidl_message_type_support_t* type_support, const micro_ros_utilities_memory_conf_t conf);
-bool micro_ros_utilities_create_message_memory(const rosidl_message_type_support_t* type_support, void* ros_msg, const micro_ros_utilities_memory_conf_t conf);
-bool micro_ros_utilities_create_static_message_memory( const rosidl_message_type_support_t* type_support, void* ros_msg, const micro_ros_utilities_memory_conf_t conf, uint8_t * buffer, size_t buffer_len);
-bool micro_ros_utilities_destroy_message_memory(const rosidl_message_type_support_t* type_support, void* ros_msg, const micro_ros_utilities_memory_conf_t conf);
+rosidl_runtime_c__String micro_ros_utilities_type_info(
+  const rosidl_message_type_support_t * type_support);
+size_t micro_ros_utilities_get_dynamic_size(
+  const rosidl_message_type_support_t * type_support,
+  const micro_ros_utilities_memory_conf_t conf);
+bool micro_ros_utilities_create_message_memory(
+  const rosidl_message_type_support_t * type_support,
+  void * ros_msg,
+  const micro_ros_utilities_memory_conf_t conf);
+bool micro_ros_utilities_create_static_message_memory(
+  const rosidl_message_type_support_t * type_support, void * ros_msg,
+  const micro_ros_utilities_memory_conf_t conf, uint8_t * buffer, size_t buffer_len);
+bool micro_ros_utilities_destroy_message_memory(
+  const rosidl_message_type_support_t * type_support,
+  void * ros_msg,
+  const micro_ros_utilities_memory_conf_t conf);
 
 #if __cplusplus
 }

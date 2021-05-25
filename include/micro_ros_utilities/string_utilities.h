@@ -41,8 +41,12 @@ extern "C"
 
 rosidl_runtime_c__String micro_ros_string_utilities_init(const char * data);
 const char * micro_ros_string_utilities_get_c_str(rosidl_runtime_c__String str);
-rosidl_runtime_c__String micro_ros_string_utilities_append(rosidl_runtime_c__String str, const char * data);
-rosidl_runtime_c__String micro_ros_string_utilities_remove_tail_chars(rosidl_runtime_c__String str, const size_t n);
+rosidl_runtime_c__String micro_ros_string_utilities_append(
+  rosidl_runtime_c__String str,
+  const char * data);
+rosidl_runtime_c__String micro_ros_string_utilities_remove_tail_chars(
+  rosidl_runtime_c__String str,
+  const size_t n);
 void micro_ros_string_utilities_destroy(rosidl_runtime_c__String * str);
 
 #if __cplusplus
