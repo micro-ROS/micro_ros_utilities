@@ -1,3 +1,17 @@
+// Copyright (c) 2021 - for information on the respective copyright owner
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <micro_ros_utilities/type_utilities.h>
 
 #include <string.h>
@@ -69,8 +83,8 @@ void print_type_info(
   char buffer[500];
 
   if (level == 0) {
-    sprintf(
-      buffer, "%sIntrospection for %s/%s - %d members, %ld B\n",
+    snprintf(
+      buffer, sizeof(buffer), "%sIntrospection for %s/%s - %d members, %ld B\n",
       indent_buffer.data,
       members->message_namespace_,
       members->message_name_,
@@ -91,8 +105,8 @@ void print_type_info(
       rec_members = (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
     }
 
-    sprintf(
-      buffer, "%s - %s [%s%s%s%s%s%s]%s\n",
+    snprintf(
+      buffer, sizeof(buffer), "%s - %s [%s%s%s%s%s%s]%s\n",
       indent_buffer.data,
       m.name_,
       (m.is_array_) ? (m.array_size_ == 0) ? "Sequence of " : "Array of " : "",
@@ -169,7 +183,9 @@ size_t handle_message_memory(
     size_t sequence_size = 0;
 
     if (m.type_id_ == 16 || is_sequence) {
-      generic_sequence_t * ptr = (generic_sequence_t *)((uint8_t *)ros_msg + m.offset_);
+      uint8_t * aux_ptr = (uint8_t *) ros_msg;
+      aux_ptr += m.offset_;
+      generic_sequence_t * ptr = (generic_sequence_t *) aux_ptr;
       rosidl_typesupport_introspection_c__MessageMembers * rec_members = NULL;
 
       if (m.type_id_ == 18) {
@@ -265,7 +281,7 @@ size_t micro_ros_utilities_get_dynamic_size(
   const rosidl_typesupport_introspection_c__MessageMembers * members =
     (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
 
-  rosidl_runtime_c__String name_tree;
+  rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
     name_tree = micro_ros_string_utilities_init("");
@@ -300,7 +316,7 @@ bool micro_ros_utilities_create_message_memory(
   const rosidl_typesupport_introspection_c__MessageMembers * members =
     (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
 
-  rosidl_runtime_c__String name_tree;
+  rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
     name_tree = micro_ros_string_utilities_init("");
@@ -345,7 +361,7 @@ bool micro_ros_utilities_create_static_message_memory(
   const rosidl_typesupport_introspection_c__MessageMembers * members =
     (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
 
-  rosidl_runtime_c__String name_tree;
+  rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
     name_tree = micro_ros_string_utilities_init("");
@@ -381,7 +397,7 @@ bool micro_ros_utilities_destroy_message_memory(
   const rosidl_typesupport_introspection_c__MessageMembers * members =
     (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
 
-  rosidl_runtime_c__String name_tree;
+  rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
     name_tree = micro_ros_string_utilities_init("");

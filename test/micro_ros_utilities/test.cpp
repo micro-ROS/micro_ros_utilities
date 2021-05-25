@@ -14,12 +14,14 @@
 
 #include <gtest/gtest.h>
 
-#include <malloc.h>
-
 #include <micro_ros_utilities/string_utilities.h>
 #include <micro_ros_utilities/type_utilities.h>
 #include <std_msgs/msg/multi_array_layout.h>
-#include <std_msgs/msg/multi_array_layout.h>
+
+#include <string>
+#include <map>
+#include <utility>
+
 
 TEST(Test, micro_ros_utilities_strings)
 {
@@ -27,7 +29,7 @@ TEST(Test, micro_ros_utilities_strings)
   rosidl_runtime_c__String str = micro_ros_string_utilities_init(data.c_str());
 
   ASSERT_FALSE(str.data == NULL);
-  ASSERT_TRUE(strcmp(data.c_str(), str.data) == 0);
+  ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
   ASSERT_EQ(data.length(), str.size);
   ASSERT_EQ(data.length() + 1, str.capacity);
 
@@ -38,29 +40,29 @@ TEST(Test, micro_ros_utilities_strings)
   str = micro_ros_string_utilities_append(str, append.c_str());
 
   ASSERT_FALSE(str.data == NULL);
-  ASSERT_TRUE(strcmp(complete.c_str(), str.data) == 0);
+  ASSERT_EQ(strcmp(complete.c_str(), str.data), 0);
   ASSERT_EQ(complete.length(), str.size);
   ASSERT_EQ(complete.length() + 1, str.capacity);
 
   str = micro_ros_string_utilities_remove_tail_chars(str, append.length());
 
   ASSERT_FALSE(str.data == NULL);
-  ASSERT_TRUE(strcmp(data.c_str(), str.data) == 0);
+  ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
   ASSERT_EQ(data.length(), str.size);
   ASSERT_EQ(complete.length() + 1, str.capacity);
 
   micro_ros_string_utilities_destroy(&str);
 
   ASSERT_TRUE(str.data == NULL);
-  ASSERT_TRUE(str.size == 0l);
-  ASSERT_TRUE(str.capacity == 0l);
+  ASSERT_EQ(str.size, 0ul);
+  ASSERT_EQ(str.capacity, 0ul);
 
   rosidl_runtime_c__String empty = micro_ros_string_utilities_init("");
 
   ASSERT_FALSE(empty.data == NULL);
   ASSERT_EQ(empty.data[0], '\0');
-  ASSERT_TRUE(empty.size == 0l);
-  ASSERT_TRUE(empty.capacity == 1l);
+  ASSERT_EQ(empty.size, 0ul);
+  ASSERT_EQ(empty.capacity, 1ul);
 }
 
 static std::map<void *, size_t> allocated_memory_map;
@@ -164,7 +166,7 @@ TEST(Test, default_config)
       conf));
 
   size_t allocated_memory = 0;
-  for (auto const & x: allocated_memory_map) {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -190,7 +192,7 @@ TEST(Test, default_config)
       conf));
 
   allocated_memory = 0;
-  for (auto const & x: allocated_memory_map) {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -238,7 +240,7 @@ TEST(Test, custom_config)
       conf));
 
   size_t allocated_memory = 0;
-  for (auto const & x: allocated_memory_map) {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -264,7 +266,7 @@ TEST(Test, custom_config)
       conf));
 
   allocated_memory = 0;
-  for (auto const & x: allocated_memory_map) {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -293,7 +295,7 @@ TEST(Test, preallocated_custom_config)
     conf
   );
 
-  uint8_t * static_buffer = (uint8_t *) malloc(size * sizeof(uint8_t));
+  uint8_t * static_buffer = reinterpret_cast<uint8_t *>(malloc(size * sizeof(uint8_t)));
 
   ASSERT_TRUE(
     micro_ros_utilities_create_static_message_memory(
@@ -343,7 +345,7 @@ TEST(Test, failures)
 
   size = size - 100;
 
-  uint8_t * static_buffer = (uint8_t *) malloc(size * sizeof(uint8_t));
+  uint8_t * static_buffer = reinterpret_cast<uint8_t *>(malloc(size * sizeof(uint8_t)));
 
   ASSERT_FALSE(
     micro_ros_utilities_create_static_message_memory(
@@ -358,5 +360,4 @@ TEST(Test, failures)
       typesupport,
       &msg,
       conf));
-
 }
