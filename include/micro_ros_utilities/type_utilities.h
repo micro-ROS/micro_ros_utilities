@@ -88,6 +88,27 @@ micro_ros_utilities_get_dynamic_size(
   const micro_ros_utilities_memory_conf_t conf);
 
 /**
+ *  Returns the static memory size that will be used for a type
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] type_support ROS 2 typesupport
+ * \param[in] conf         Utils configurator
+ * \return `size_t` Size in Bytes that will be used
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+size_t
+micro_ros_utilities_get_static_size(
+  const rosidl_message_type_support_t * type_support,
+  const micro_ros_utilities_memory_conf_t conf);
+
+/**
  *  Allocates the dynamic memory required for a message
  *
  * <hr>

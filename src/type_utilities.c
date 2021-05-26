@@ -22,6 +22,7 @@
 
 #define TYPE_STRING rosidl_typesupport_introspection_c__ROS_TYPE_STRING
 #define TYPE_COMPOSED rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE
+#define ALIGNMENT 4
 
 static const char * basic_type_names[] =
 {"none", "float", "double", "long double", "char", "wchar", "bool", "octec", "uint8", "int8",
@@ -44,6 +45,12 @@ static size_t operation_buffer_index;
 
 void * get_static_memory(size_t size)
 {
+  // Ensure alignment
+  while (operation_buffer[operation_buffer_index] % ALIGNMENT != 0 )
+  {
+    operation_buffer_index++;
+  }
+
   void * ptr = &operation_buffer[operation_buffer_index];
   operation_buffer_index += size;
   return ptr;
@@ -157,6 +164,7 @@ typedef enum handle_message_memory_operation_t
   CREATE_PREALLOCATED_OPERATION,
   DESTROY_OPERATION,
   CALCULATE_SIZE_OPERATION,
+  CALCULATE_SIZE_PREALLOCATED_OPERATION,
 } handle_message_memory_operation_t;
 
 size_t handle_message_memory(
@@ -214,12 +222,13 @@ size_t handle_message_memory(
 
       if (operation == CREATE_OPERATION) {
         ptr->data = allocator.allocate(sequence_size * member_size, allocator.state);
-        memset(ptr->data, 0, sequence_size * member_size);
         if (ptr->data == NULL) {
           return 0;
         }
+        memset(ptr->data, 0, sequence_size * member_size);
         ptr->size = 0;
         ptr->capacity = sequence_size;
+        used_memory += sequence_size * member_size;
       } else if (operation == CREATE_PREALLOCATED_OPERATION) {
         ptr->data = get_static_memory(sequence_size * member_size);
         if (ptr->data == NULL) {
@@ -227,8 +236,14 @@ size_t handle_message_memory(
         }
         ptr->size = 0;
         ptr->capacity = sequence_size;
+        size_t size = sequence_size * member_size;
+        used_memory += size / ALIGNMENT + ((size % ALIGNMENT != 0) ? ALIGNMENT - size % ALIGNMENT : 0);
+      } else if (operation == CALCULATE_SIZE_PREALLOCATED_OPERATION) {
+        size_t size = sequence_size * member_size;
+        used_memory += size / ALIGNMENT + ((size % ALIGNMENT != 0) ? ALIGNMENT - size % ALIGNMENT : 0);
+      }else{
+        used_memory += sequence_size * member_size;
       }
-      used_memory += sequence_size * member_size;
     }
 
     if (m.type_id_ == TYPE_COMPOSED) {
@@ -241,8 +256,8 @@ size_t handle_message_memory(
         generic_sequence_t * ptr = (generic_sequence_t *)((uint8_t *)ros_msg + m.offset_);
         for (size_t i = 0; i < sequence_size; i++) {
           uint8_t * data =
-            (operation ==
-            CALCULATE_SIZE_OPERATION) ? NULL : (uint8_t *)ptr->data + (i * rec_members->size_of_);
+            (operation == CALCULATE_SIZE_OPERATION || operation == CALCULATE_SIZE_PREALLOCATED_OPERATION) ?
+            NULL : (uint8_t *)ptr->data + (i * rec_members->size_of_);
           used_memory += handle_message_memory(rec_members, data, conf, name_tree, operation);
         }
 
@@ -300,6 +315,38 @@ size_t micro_ros_utilities_get_dynamic_size(
   return size;
 }
 
+size_t micro_ros_utilities_get_static_size(
+  const rosidl_message_type_support_t * type_support,
+  const micro_ros_utilities_memory_conf_t conf)
+{
+  const micro_ros_utilities_memory_conf_t actual_conf = get_configuration(conf);
+
+  const rosidl_message_type_support_t * introspection =
+    get_message_typesupport_handle(
+    type_support,
+    rosidl_typesupport_introspection_c__identifier
+    );
+
+  const rosidl_typesupport_introspection_c__MessageMembers * members =
+    (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
+
+  rosidl_runtime_c__String name_tree = {0};
+
+  if (conf.n_rules > 0) {
+    name_tree = micro_ros_string_utilities_init("");
+  }
+
+  size_t size = handle_message_memory(
+    members, NULL, actual_conf, name_tree,
+    CALCULATE_SIZE_PREALLOCATED_OPERATION);
+
+  if (conf.n_rules > 0) {
+    micro_ros_string_utilities_destroy(&name_tree);
+  }
+
+  return size;
+}
+
 bool micro_ros_utilities_create_message_memory(
   const rosidl_message_type_support_t * type_support,
   void * ros_msg,
@@ -343,11 +390,13 @@ bool micro_ros_utilities_create_static_message_memory(
   uint8_t * buffer,
   size_t buffer_len)
 {
-  size_t calculated_size = micro_ros_utilities_get_dynamic_size(type_support, conf);
+  size_t calculated_size = micro_ros_utilities_get_static_size(type_support, conf);
 
   if (calculated_size > buffer_len) {
     return false;
   }
+
+  memset(buffer, 0, calculated_size);
 
   operation_buffer = buffer;
   operation_buffer_index = 0;
