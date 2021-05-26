@@ -46,8 +46,7 @@ static size_t operation_buffer_index;
 void * get_static_memory(size_t size)
 {
   // Ensure alignment
-  while (operation_buffer_index % ALIGNMENT != 0 )
-  {
+  while (operation_buffer_index % ALIGNMENT != 0) {
     operation_buffer_index++;
   }
   void * ptr = (operation_buffer == NULL) ?
@@ -243,7 +242,7 @@ size_t handle_message_memory(
         size_t previous_size = operation_buffer_index;
         get_static_memory(sequence_size * member_size);
         used_memory += operation_buffer_index - previous_size;
-      }else{
+      } else {
         used_memory += sequence_size * member_size;
       }
     }
@@ -258,7 +257,8 @@ size_t handle_message_memory(
         generic_sequence_t * ptr = (generic_sequence_t *)((uint8_t *)ros_msg + m.offset_);
         for (size_t i = 0; i < sequence_size; i++) {
           uint8_t * data =
-            (operation == CALCULATE_SIZE_OPERATION || operation == CALCULATE_SIZE_PREALLOCATED_OPERATION) ?
+            (operation == CALCULATE_SIZE_OPERATION ||
+            operation == CALCULATE_SIZE_PREALLOCATED_OPERATION) ?
             NULL : (uint8_t *)ptr->data + (i * rec_members->size_of_);
           used_memory += handle_message_memory(rec_members, data, conf, name_tree, operation);
         }

@@ -35,7 +35,9 @@ rosidl_runtime_c__String micro_ros_string_utilities_init(const char * data)
   return ret;
 }
 
-rosidl_runtime_c__String micro_ros_string_utilities_set(rosidl_runtime_c__String str, const char * data)
+rosidl_runtime_c__String micro_ros_string_utilities_set(
+  rosidl_runtime_c__String str,
+  const char * data)
 {
   const rcutils_allocator_t allocator = rcutils_get_default_allocator();
 
