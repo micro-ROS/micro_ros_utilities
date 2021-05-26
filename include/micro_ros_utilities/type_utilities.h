@@ -23,27 +23,31 @@ extern "C"
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
 #include <rosidl_runtime_c/string.h>
 #include <rcutils/allocator.h>
+#include <micro_ros_utilities/visibility_control.h>
 
+// Memory rule
 typedef struct micro_ros_utilities_memory_rule_t
 {
   const char * rule;
   size_t size;
 } micro_ros_utilities_memory_rule_t;
 
+// Memory configuration string
 typedef struct micro_ros_utilities_memory_conf_t
 {
-    size_t max_string_capacity;
-    size_t max_ros2_type_sequence;
-    size_t max_basic_type_sequence;
-    size_t n_rules;
-    const micro_ros_utilities_memory_rule_t * rules;
-    const rcutils_allocator_t * allocator;
+  size_t max_string_capacity;
+  size_t max_ros2_type_sequence;
+  size_t max_basic_type_sequence;
+  size_t n_rules;
+  const micro_ros_utilities_memory_rule_t * rules;
+  const rcutils_allocator_t * allocator;
 } micro_ros_utilities_memory_conf_t;
 
+// Default memory configuration
 extern const micro_ros_utilities_memory_conf_t memory_conf_default;
 
 /**
- *  Initializes a RCLC parameter server in a node with default configuration
+ *  Returns a string with the type instronspection data
  *
  * <hr>
  * Attribute          | Adherence
@@ -51,18 +55,106 @@ extern const micro_ros_utilities_memory_conf_t memory_conf_default;
  * Allocates Memory   | Yes
  * Thread-Safe        | No
  * Uses Atomics       | No
- * Lock-Free          | No
+ * Lock-Free          | Yes
  *
- * \param[inout] parameter_server preallocated rclc_parameter_server_t
- * \param[in] node related node
- * \return `RCL_RET_OK` if the \p parameter_server was initialized successfully
+ * \param[in] type_support ROS 2 typesupport
+ * \return `rosidl_runtime_c__String` string containing data
  */
+MICRO_ROS_UTILITIES_PUBLIC
+rosidl_runtime_c__String
+micro_ros_utilities_type_info(
+  const rosidl_message_type_support_t * type_support);
 
-rosidl_runtime_c__String micro_ros_utilities_type_info(const rosidl_message_type_support_t* type_support);
-size_t micro_ros_utilities_get_dynamic_size(const rosidl_message_type_support_t* type_support, const micro_ros_utilities_memory_conf_t conf);
-bool micro_ros_utilities_create_message_memory(const rosidl_message_type_support_t* type_support, void* ros_msg, const micro_ros_utilities_memory_conf_t conf);
-bool micro_ros_utilities_create_static_message_memory( const rosidl_message_type_support_t* type_support, void* ros_msg, const micro_ros_utilities_memory_conf_t conf, uint8_t * buffer, size_t buffer_len);
-bool micro_ros_utilities_destroy_message_memory(const rosidl_message_type_support_t* type_support, void* ros_msg, const micro_ros_utilities_memory_conf_t conf);
+/**
+ *  Returns the dynamic memory size that will be used for a type
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] type_support ROS 2 typesupport
+ * \param[in] conf         Utils configurator
+ * \return `size_t` Size in Bytes that will be used
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+size_t
+micro_ros_utilities_get_dynamic_size(
+  const rosidl_message_type_support_t * type_support,
+  const micro_ros_utilities_memory_conf_t conf);
+
+/**
+ *  Allocates the dynamic memory required for a message
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] type_support       ROS 2 typesupport
+ * \param[inout] ros_msg         ROS 2 msg with no type
+ * \param[in] conf               Utils configurator
+ * \return `bool` true if success
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+bool
+micro_ros_utilities_create_message_memory(
+  const rosidl_message_type_support_t * type_support,
+  void * ros_msg,
+  const micro_ros_utilities_memory_conf_t conf);
+
+/**
+ *  Allocates the memory required for a message in a user-provided buffer
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] type_support       ROS 2 typesupport
+ * \param[inout] ros_msg         ROS 2 msg with no type
+ * \param[in] conf               Utils configurator
+ * \param[in] buffer             User buffer
+ * \param[in] buffer_len         User buffer length
+ * \return `bool` true if success
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+bool
+micro_ros_utilities_create_static_message_memory(
+  const rosidl_message_type_support_t * type_support, void * ros_msg,
+  const micro_ros_utilities_memory_conf_t conf, uint8_t * buffer, size_t buffer_len);
+
+/**
+ *  Deallocates the dynamic memory of a message
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] type_support       ROS 2 typesupport
+ * \param[inout] ros_msg         ROS 2 msg with no type
+ * \param[in] conf               Utils configurator
+ * \return `bool` true if success
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+bool
+micro_ros_utilities_destroy_message_memory(
+  const rosidl_message_type_support_t * type_support,
+  void * ros_msg,
+  const micro_ros_utilities_memory_conf_t conf);
 
 #if __cplusplus
 }

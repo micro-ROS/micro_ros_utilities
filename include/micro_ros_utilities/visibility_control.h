@@ -25,30 +25,30 @@ extern "C"
 
 #if defined _WIN32 || defined __CYGWIN__
   #ifdef __GNUC__
-    #define RCLC_PARAMETER_EXPORT __attribute__ ((dllexport))
-    #define RCLC_PARAMETER_IMPORT __attribute__ ((dllimport))
+    #define MICRO_ROS_UTILITIES_EXPORT __attribute__ ((dllexport))
+    #define MICRO_ROS_UTILITIES_IMPORT __attribute__ ((dllimport))
   #else
-    #define RCLC_PARAMETER_EXPORT __declspec(dllexport)
-    #define RCLC_PARAMETER_IMPORT __declspec(dllimport)
+    #define MICRO_ROS_UTILITIES_EXPORT __declspec(dllexport)
+    #define MICRO_ROS_UTILITIES_IMPORT __declspec(dllimport)
   #endif
-  #ifdef RCLC_PARAMETER_BUILDING_LIBRARY
-    #define RCLC_PARAMETER_PUBLIC RCLC_PARAMETER_EXPORT
+  #ifdef MICRO_ROS_UTILITIES_BUILDING_LIBRARY
+    #define MICRO_ROS_UTILITIES_PUBLIC MICRO_ROS_UTILITIES_EXPORT
   #else
-    #define RCLC_PARAMETER_PUBLIC RCLC_PARAMETER_IMPORT
+    #define MICRO_ROS_UTILITIES_PUBLIC MICRO_ROS_UTILITIES_IMPORT
   #endif
-  #define RCLC_PARAMETER_PUBLIC_TYPE RCLC_PARAMETER_PUBLIC
-  #define RCLC_PARAMETER_LOCAL
+  #define MICRO_ROS_UTILITIES_PUBLIC_TYPE MICRO_ROS_UTILITIES_PUBLIC
+  #define MICRO_ROS_UTILITIES_LOCAL
 #else
-  #define RCLC_PARAMETER_EXPORT __attribute__ ((visibility("default")))
-  #define RCLC_PARAMETER_IMPORT
+  #define MICRO_ROS_UTILITIES_EXPORT __attribute__ ((visibility("default")))
+  #define MICRO_ROS_UTILITIES_IMPORT
   #if __GNUC__ >= 4
-    #define RCLC_PARAMETER_PUBLIC __attribute__ ((visibility("default")))
-    #define RCLC_PARAMETER_LOCAL  __attribute__ ((visibility("hidden")))
+    #define MICRO_ROS_UTILITIES_PUBLIC __attribute__ ((visibility("default")))
+    #define MICRO_ROS_UTILITIES_LOCAL  __attribute__ ((visibility("hidden")))
   #else
-    #define RCLC_PARAMETER_PUBLIC
-    #define RCLC_PARAMETER_LOCAL
+    #define MICRO_ROS_UTILITIES_PUBLIC
+    #define MICRO_ROS_UTILITIES_LOCAL
   #endif
-  #define RCLC_PARAMETER_PUBLIC_TYPE
+  #define MICRO_ROS_UTILITIES_PUBLIC_TYPE
 #endif
 
 #ifdef __cplusplus

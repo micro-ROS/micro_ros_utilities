@@ -14,12 +14,14 @@
 
 #include <gtest/gtest.h>
 
-#include <malloc.h>
-
 #include <micro_ros_utilities/string_utilities.h>
 #include <micro_ros_utilities/type_utilities.h>
 #include <std_msgs/msg/multi_array_layout.h>
-#include <std_msgs/msg/multi_array_layout.h>
+
+#include <string>
+#include <map>
+#include <utility>
+
 
 TEST(Test, micro_ros_utilities_strings)
 {
@@ -27,7 +29,7 @@ TEST(Test, micro_ros_utilities_strings)
   rosidl_runtime_c__String str = micro_ros_string_utilities_init(data.c_str());
 
   ASSERT_FALSE(str.data == NULL);
-  ASSERT_TRUE(strcmp(data.c_str(), str.data) == 0);
+  ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
   ASSERT_EQ(data.length(), str.size);
   ASSERT_EQ(data.length() + 1, str.capacity);
 
@@ -38,37 +40,37 @@ TEST(Test, micro_ros_utilities_strings)
   str = micro_ros_string_utilities_append(str, append.c_str());
 
   ASSERT_FALSE(str.data == NULL);
-  ASSERT_TRUE(strcmp(complete.c_str(), str.data) == 0);
+  ASSERT_EQ(strcmp(complete.c_str(), str.data), 0);
   ASSERT_EQ(complete.length(), str.size);
   ASSERT_EQ(complete.length() + 1, str.capacity);
 
   str = micro_ros_string_utilities_remove_tail_chars(str, append.length());
 
   ASSERT_FALSE(str.data == NULL);
-  ASSERT_TRUE(strcmp(data.c_str(), str.data) == 0);
+  ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
   ASSERT_EQ(data.length(), str.size);
   ASSERT_EQ(complete.length() + 1, str.capacity);
 
   micro_ros_string_utilities_destroy(&str);
 
   ASSERT_TRUE(str.data == NULL);
-  ASSERT_TRUE(str.size == 0l);
-  ASSERT_TRUE(str.capacity == 0l);
+  ASSERT_EQ(str.size, 0ul);
+  ASSERT_EQ(str.capacity, 0ul);
 
   rosidl_runtime_c__String empty = micro_ros_string_utilities_init("");
 
   ASSERT_FALSE(empty.data == NULL);
   ASSERT_EQ(empty.data[0], '\0');
-  ASSERT_TRUE(empty.size == 0l);
-  ASSERT_TRUE(empty.capacity == 1l);
+  ASSERT_EQ(empty.size, 0ul);
+  ASSERT_EQ(empty.capacity, 1ul);
 }
 
-static std::map<void*, size_t> allocated_memory_map;
+static std::map<void *, size_t> allocated_memory_map;
 
 extern "C" void * allocate(size_t size, void * /* state */)
 {
   void * ptr = malloc(size);
-  allocated_memory_map.emplace(std::pair<void*, size_t>(ptr, size));
+  allocated_memory_map.emplace(std::pair<void *, size_t>(ptr, size));
   return ptr;
 }
 
@@ -84,18 +86,25 @@ extern "C" void * reallocate(void * pointer, size_t size, void * /* state */)
   auto it = allocated_memory_map.find(pointer);
   allocated_memory_map.erase(it);
   void * ptr = realloc(pointer, size);
-  allocated_memory_map.emplace(std::pair<void*, size_t>(ptr, size));
+  allocated_memory_map.emplace(std::pair<void *, size_t>(ptr, size));
   return ptr;
 }
 
-extern "C" void * zero_allocate(size_t number_of_elements, size_t size_of_element, void * /* state */)
+extern "C" void * zero_allocate(
+  size_t number_of_elements, size_t size_of_element,
+  void * /* state */)
 {
   void * ptr = calloc(number_of_elements, size_of_element);
-  allocated_memory_map.emplace(std::pair<void*, size_t>(ptr, number_of_elements*size_of_element));
+  allocated_memory_map.emplace(
+    std::pair<void *, size_t>(
+      ptr,
+      number_of_elements * size_of_element));
   return ptr;
 }
 
-extern "C" void * zero_allocate_fail(size_t /* number_of_elements */, size_t /* size_of_element */, void * /* state */)
+extern "C" void * zero_allocate_fail(
+  size_t /* number_of_elements */, size_t /* size_of_element */,
+  void * /* state */)
 {
   return NULL;
 }
@@ -103,7 +112,9 @@ extern "C" void * zero_allocate_fail(size_t /* number_of_elements */, size_t /* 
 
 TEST(Test, default_config)
 {
-  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, MultiArrayLayout);
+  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(
+    std_msgs, msg,
+    MultiArrayLayout);
   allocated_memory_map.clear();
 
   auto ret = micro_ros_utilities_type_info(typesupport);
@@ -148,14 +159,14 @@ TEST(Test, default_config)
 
   ASSERT_EQ(size, 520ul);
 
-  ASSERT_TRUE(micro_ros_utilities_create_message_memory(
-    typesupport,
-    &msg,
-    conf));
+  ASSERT_TRUE(
+    micro_ros_utilities_create_message_memory(
+      typesupport,
+      &msg,
+      conf));
 
   size_t allocated_memory = 0;
-  for (auto const& x: allocated_memory_map)
-  {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -166,23 +177,22 @@ TEST(Test, default_config)
   ASSERT_EQ(msg.dim.capacity, memory_conf_default.max_ros2_type_sequence);
   ASSERT_NE(msg.dim.data, nullptr);
 
-  for (size_t i = 0; i < msg.dim.capacity; i++)
-  {
-      ASSERT_EQ(msg.dim.data[i].size, 0ul);
-      ASSERT_EQ(msg.dim.data[i].stride, 0ul);
-      ASSERT_NE(msg.dim.data[i].label.data, nullptr);
-      ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
-      ASSERT_EQ(msg.dim.data[i].label.capacity, memory_conf_default.max_string_capacity);
+  for (size_t i = 0; i < msg.dim.capacity; i++) {
+    ASSERT_EQ(msg.dim.data[i].size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].stride, 0ul);
+    ASSERT_NE(msg.dim.data[i].label.data, nullptr);
+    ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].label.capacity, memory_conf_default.max_string_capacity);
   }
 
-  ASSERT_TRUE(micro_ros_utilities_destroy_message_memory(
-    typesupport,
-    &msg,
-    conf));
+  ASSERT_TRUE(
+    micro_ros_utilities_destroy_message_memory(
+      typesupport,
+      &msg,
+      conf));
 
   allocated_memory = 0;
-  for (auto const& x: allocated_memory_map)
-  {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -192,7 +202,9 @@ TEST(Test, default_config)
 
 TEST(Test, custom_config)
 {
-  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, MultiArrayLayout);
+  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(
+    std_msgs, msg,
+    MultiArrayLayout);
   allocated_memory_map.clear();
 
   rcutils_allocator_t test_allocators = {
@@ -214,21 +226,21 @@ TEST(Test, custom_config)
   };
 
   conf.rules = rules;
-  conf.n_rules = sizeof(rules)/sizeof(rules[0]);
+  conf.n_rules = sizeof(rules) / sizeof(rules[0]);
 
   size_t size = micro_ros_utilities_get_dynamic_size(
     typesupport,
     conf
   );
 
-  ASSERT_TRUE(micro_ros_utilities_create_message_memory(
-    typesupport,
-    &msg,
-    conf));
+  ASSERT_TRUE(
+    micro_ros_utilities_create_message_memory(
+      typesupport,
+      &msg,
+      conf));
 
   size_t allocated_memory = 0;
-  for (auto const& x: allocated_memory_map)
-  {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -239,23 +251,22 @@ TEST(Test, custom_config)
   ASSERT_EQ(msg.dim.capacity, rules[0].size);
   ASSERT_NE(msg.dim.data, nullptr);
 
-  for (size_t i = 0; i < msg.dim.capacity; i++)
-  {
-      ASSERT_EQ(msg.dim.data[i].size, 0ul);
-      ASSERT_EQ(msg.dim.data[i].stride, 0ul);
-      ASSERT_NE(msg.dim.data[i].label.data, nullptr);
-      ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
-      ASSERT_EQ(msg.dim.data[i].label.capacity, rules[1].size);
+  for (size_t i = 0; i < msg.dim.capacity; i++) {
+    ASSERT_EQ(msg.dim.data[i].size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].stride, 0ul);
+    ASSERT_NE(msg.dim.data[i].label.data, nullptr);
+    ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].label.capacity, rules[1].size);
   }
 
-  ASSERT_TRUE(micro_ros_utilities_destroy_message_memory(
-    typesupport,
-    &msg,
-    conf));
+  ASSERT_TRUE(
+    micro_ros_utilities_destroy_message_memory(
+      typesupport,
+      &msg,
+      conf));
 
   allocated_memory = 0;
-  for (auto const& x: allocated_memory_map)
-  {
+  for (auto const & x : allocated_memory_map) {
     allocated_memory += x.second;
   }
 
@@ -264,7 +275,9 @@ TEST(Test, custom_config)
 
 TEST(Test, preallocated_custom_config)
 {
-  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, MultiArrayLayout);
+  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(
+    std_msgs, msg,
+    MultiArrayLayout);
 
   std_msgs__msg__MultiArrayLayout msg;
 
@@ -275,40 +288,42 @@ TEST(Test, preallocated_custom_config)
   };
 
   conf.rules = rules;
-  conf.n_rules = sizeof(rules)/sizeof(rules[0]);
+  conf.n_rules = sizeof(rules) / sizeof(rules[0]);
 
   size_t size = micro_ros_utilities_get_dynamic_size(
     typesupport,
     conf
   );
 
-  uint8_t * static_buffer = (uint8_t *) malloc(size * sizeof(uint8_t));
+  uint8_t * static_buffer = reinterpret_cast<uint8_t *>(malloc(size * sizeof(uint8_t)));
 
-  ASSERT_TRUE(micro_ros_utilities_create_static_message_memory(
-    typesupport,
-    &msg,
-    conf,
-    static_buffer,
-    size));
+  ASSERT_TRUE(
+    micro_ros_utilities_create_static_message_memory(
+      typesupport,
+      &msg,
+      conf,
+      static_buffer,
+      size));
 
   ASSERT_EQ(msg.data_offset, 0ul);
   ASSERT_EQ(msg.dim.size, 0ul);
   ASSERT_EQ(msg.dim.capacity, rules[0].size);
   ASSERT_NE(msg.dim.data, nullptr);
 
-  for (size_t i = 0; i < msg.dim.capacity; i++)
-  {
-      ASSERT_EQ(msg.dim.data[i].size, 0ul);
-      ASSERT_EQ(msg.dim.data[i].stride, 0ul);
-      ASSERT_NE(msg.dim.data[i].label.data, nullptr);
-      ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
-      ASSERT_EQ(msg.dim.data[i].label.capacity, rules[1].size);
+  for (size_t i = 0; i < msg.dim.capacity; i++) {
+    ASSERT_EQ(msg.dim.data[i].size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].stride, 0ul);
+    ASSERT_NE(msg.dim.data[i].label.data, nullptr);
+    ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].label.capacity, rules[1].size);
   }
 }
 
 TEST(Test, failures)
 {
-  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, MultiArrayLayout);
+  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(
+    std_msgs, msg,
+    MultiArrayLayout);
 
   std_msgs__msg__MultiArrayLayout msg;
 
@@ -330,18 +345,19 @@ TEST(Test, failures)
 
   size = size - 100;
 
-  uint8_t * static_buffer = (uint8_t *) malloc(size * sizeof(uint8_t));
+  uint8_t * static_buffer = reinterpret_cast<uint8_t *>(malloc(size * sizeof(uint8_t)));
 
-  ASSERT_FALSE(micro_ros_utilities_create_static_message_memory(
-    typesupport,
-    &msg,
-    conf,
-    static_buffer,
-    size));
+  ASSERT_FALSE(
+    micro_ros_utilities_create_static_message_memory(
+      typesupport,
+      &msg,
+      conf,
+      static_buffer,
+      size));
 
-  ASSERT_FALSE(micro_ros_utilities_create_message_memory(
-    typesupport,
-    &msg,
-    conf));
-
+  ASSERT_FALSE(
+    micro_ros_utilities_create_message_memory(
+      typesupport,
+      &msg,
+      conf));
 }
