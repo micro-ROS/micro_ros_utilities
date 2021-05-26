@@ -174,7 +174,7 @@ TEST(Test, default_config)
 
   ASSERT_EQ(msg.data_offset, 0ul);
   ASSERT_EQ(msg.dim.size, 0ul);
-  ASSERT_EQ(msg.dim.capacity, memory_conf_default.max_ros2_type_sequence);
+  ASSERT_EQ(msg.dim.capacity, memory_conf_default.max_ros2_type_sequence_capacity);
   ASSERT_NE(msg.dim.data, nullptr);
 
   for (size_t i = 0; i < msg.dim.capacity; i++) {

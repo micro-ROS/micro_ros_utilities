@@ -36,15 +36,15 @@ typedef struct micro_ros_utilities_memory_rule_t
 typedef struct micro_ros_utilities_memory_conf_t
 {
   size_t max_string_capacity;
-  size_t max_ros2_type_sequence;
-  size_t max_basic_type_sequence;
-  size_t n_rules;
+  size_t max_ros2_type_sequence_capacity;
+  size_t max_basic_type_sequence_capacity;
   const micro_ros_utilities_memory_rule_t * rules;
+  size_t n_rules;
   const rcutils_allocator_t * allocator;
 } micro_ros_utilities_memory_conf_t;
 
 // Default memory configuration
-extern const micro_ros_utilities_memory_conf_t memory_conf_default;
+const micro_ros_utilities_memory_conf_t memory_conf_default = {20, 10, 20, NULL, 0, NULL};
 
 /**
  *  Returns a string with the type instronspection data

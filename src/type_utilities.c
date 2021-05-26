@@ -17,7 +17,11 @@
 #include <string.h>
 
 #include <rosidl_typesupport_introspection_c/identifier.h>
+#include <rosidl_typesupport_introspection_c/field_types.h>
 #include <micro_ros_utilities/string_utilities.h>
+
+#define TYPE_STRING rosidl_typesupport_introspection_c__ROS_TYPE_STRING
+#define TYPE_COMPOSED rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE
 
 static const char * basic_type_names[] =
 {"none", "float", "double", "long double", "char", "wchar", "bool", "octec", "uint8", "int8",
@@ -35,14 +39,6 @@ typedef struct generic_sequence_t
   size_t capacity;
 } generic_sequence_t;
 
-const micro_ros_utilities_memory_conf_t memory_conf_default = {
-  .max_string_capacity = 20,
-  .max_ros2_type_sequence = 10,
-  .max_basic_type_sequence = 20,
-  .rules = NULL,
-  .n_rules = 0,
-};
-
 static uint8_t * operation_buffer;
 static size_t operation_buffer_index;
 
@@ -57,15 +53,15 @@ static micro_ros_utilities_memory_conf_t get_configuration(
   const micro_ros_utilities_memory_conf_t conf)
 {
   micro_ros_utilities_memory_conf_t ret = memory_conf_default;
-  ret.max_basic_type_sequence =
-    (conf.max_basic_type_sequence ==
-    0) ? memory_conf_default.max_basic_type_sequence : conf.max_basic_type_sequence;
-  ret.max_ros2_type_sequence =
-    (conf.max_ros2_type_sequence ==
-    0) ? memory_conf_default.max_ros2_type_sequence : conf.max_ros2_type_sequence;
+  ret.max_basic_type_sequence_capacity =
+    (conf.max_basic_type_sequence_capacity ==0) ?
+      memory_conf_default.max_basic_type_sequence_capacity : conf.max_basic_type_sequence_capacity;
+  ret.max_ros2_type_sequence_capacity =
+    (conf.max_ros2_type_sequence_capacity == 0) ?
+    memory_conf_default.max_ros2_type_sequence_capacity : conf.max_ros2_type_sequence_capacity;
   ret.max_string_capacity =
-    (conf.max_string_capacity ==
-    0) ? memory_conf_default.max_string_capacity : conf.max_string_capacity;
+    (conf.max_string_capacity ==0) ?
+    memory_conf_default.max_string_capacity : conf.max_string_capacity;
 
   ret.rules = (conf.rules == NULL) ? memory_conf_default.rules : conf.rules;
   ret.n_rules = conf.n_rules;
@@ -99,7 +95,7 @@ void print_type_info(
     rosidl_typesupport_introspection_c__MessageMember m = members->members_[i];
 
     rosidl_typesupport_introspection_c__MessageMembers * rec_members = NULL;
-    if (m.type_id_ == 18) {
+    if (m.type_id_ == TYPE_COMPOSED) {
       const rosidl_message_type_support_t * introspection = get_message_typesupport_handle(
         m.members_, rosidl_typesupport_introspection_c__identifier);
       rec_members = (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
@@ -111,16 +107,16 @@ void print_type_info(
       m.name_,
       (m.is_array_) ? (m.array_size_ == 0) ? "Sequence of " : "Array of " : "",
       basic_type_names[m.type_id_],
-      m.type_id_ == 18 ? " " : "",
-      m.type_id_ == 18 ? rec_members->message_namespace_ : "",
-      m.type_id_ == 18 ? "/" : "",
-      m.type_id_ == 18 ? rec_members->message_name_ : "",
-      m.type_id_ == 16 || ((m.is_array_) && (m.array_size_ == 0)) ? " <- This should be inited" : ""
+      m.type_id_ == TYPE_COMPOSED ? " " : "",
+      m.type_id_ == TYPE_COMPOSED ? rec_members->message_namespace_ : "",
+      m.type_id_ == TYPE_COMPOSED ? "/" : "",
+      m.type_id_ == TYPE_COMPOSED ? rec_members->message_name_ : "",
+      m.type_id_ == TYPE_STRING || ((m.is_array_) && (m.array_size_ == 0)) ? " <- This should be inited" : ""
     );
 
     *out = micro_ros_string_utilities_append(*out, buffer);
 
-    if (m.type_id_ == 18) {
+    if (m.type_id_ == TYPE_COMPOSED) {
       print_type_info(rec_members, out, indent_buffer, level + 1);
     }
   }
@@ -166,8 +162,7 @@ size_t handle_message_memory(
 {
   rcutils_allocator_t allocator =
     (conf.allocator == NULL) ?
-    rcutils_get_default_allocator() :
-    *conf.allocator;
+    rcutils_get_default_allocator() : *conf.allocator;
 
   size_t used_memory = 0;
 
@@ -182,23 +177,23 @@ size_t handle_message_memory(
 
     size_t sequence_size = 0;
 
-    if (m.type_id_ == 16 || is_sequence) {
+    if (m.type_id_ == TYPE_STRING || is_sequence) {
       uint8_t * aux_ptr = (uint8_t *) ros_msg;
       aux_ptr += m.offset_;
       generic_sequence_t * ptr = (generic_sequence_t *) aux_ptr;
       rosidl_typesupport_introspection_c__MessageMembers * rec_members = NULL;
 
-      if (m.type_id_ == 18) {
+      if (m.type_id_ == TYPE_COMPOSED) {
         const rosidl_message_type_support_t * introspection = get_message_typesupport_handle(
           m.members_, rosidl_typesupport_introspection_c__identifier);
         rec_members = (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
       }
 
       size_t member_size =
-        (m.type_id_ == 18) ? rec_members->size_of_ : basic_types_size[m.type_id_];
-      sequence_size = (m.type_id_ == 18) ? conf.max_ros2_type_sequence :
-        (m.type_id_ == 16) ? conf.max_string_capacity :
-        conf.max_basic_type_sequence;
+        (m.type_id_ == TYPE_COMPOSED) ? rec_members->size_of_ : basic_types_size[m.type_id_];
+      sequence_size = (m.type_id_ == TYPE_COMPOSED) ? conf.max_ros2_type_sequence_capacity :
+        (m.type_id_ == TYPE_STRING) ? conf.max_string_capacity :
+        conf.max_basic_type_sequence_capacity;
 
       if (conf.n_rules > 0) {
         for (size_t i = 0; i < conf.n_rules; i++) {
@@ -229,13 +224,13 @@ size_t handle_message_memory(
       used_memory += sequence_size * member_size;
     }
 
-    if (m.type_id_ == 18) {
+    if (m.type_id_ == TYPE_COMPOSED) {
       const rosidl_message_type_support_t * introspection = get_message_typesupport_handle(
         m.members_, rosidl_typesupport_introspection_c__identifier);
       rosidl_typesupport_introspection_c__MessageMembers * rec_members =
         (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
 
-      if ((m.type_id_ == 16 || m.type_id_ == 18) && is_sequence) {
+      if ((m.type_id_ == TYPE_STRING || m.type_id_ == TYPE_COMPOSED) && is_sequence) {
         generic_sequence_t * ptr = (generic_sequence_t *)((uint8_t *)ros_msg + m.offset_);
         for (size_t i = 0; i < sequence_size; i++) {
           uint8_t * data =
@@ -251,7 +246,7 @@ size_t handle_message_memory(
       }
     }
 
-    if ((m.type_id_ == 16 || is_sequence) && operation == DESTROY_OPERATION) {
+    if ((m.type_id_ == TYPE_STRING || is_sequence) && operation == DESTROY_OPERATION) {
       generic_sequence_t * ptr = (generic_sequence_t *)((uint8_t *)ros_msg + m.offset_);
       allocator.deallocate(ptr->data, allocator.state);
       ptr->size = 0;
