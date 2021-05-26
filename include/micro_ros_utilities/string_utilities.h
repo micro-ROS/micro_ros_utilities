@@ -42,6 +42,24 @@ rosidl_runtime_c__String
 micro_ros_string_utilities_init(const char * data);
 
 /**
+ *  Create a rosidl_runtime_c__String from a char pointer
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] data char pointer
+ * \return `rosidl_runtime_c__String` string containing data
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+rosidl_runtime_c__String
+micro_ros_string_utilities_set(rosidl_runtime_c__String str, const char * data);
+
+/**
  *  Returns the char pointer to the rosidl_runtime_c__String data
  *
  * <hr>
