@@ -50,8 +50,9 @@ void * get_static_memory(size_t size)
   {
     operation_buffer_index++;
   }
+  void * ptr = (operation_buffer == NULL) ?
+    NULL : &operation_buffer[operation_buffer_index];
 
-  void * ptr = &operation_buffer[operation_buffer_index];
   operation_buffer_index += size;
   return ptr;
 }
@@ -230,17 +231,18 @@ size_t handle_message_memory(
         ptr->capacity = sequence_size;
         used_memory += sequence_size * member_size;
       } else if (operation == CREATE_PREALLOCATED_OPERATION) {
+        size_t previous_size = operation_buffer_index;
         ptr->data = get_static_memory(sequence_size * member_size);
         if (ptr->data == NULL) {
           return 0;
         }
         ptr->size = 0;
         ptr->capacity = sequence_size;
-        size_t size = sequence_size * member_size;
-        used_memory += size / ALIGNMENT + ((size % ALIGNMENT != 0) ? ALIGNMENT - size % ALIGNMENT : 0);
+        used_memory += operation_buffer_index - previous_size;
       } else if (operation == CALCULATE_SIZE_PREALLOCATED_OPERATION) {
-        size_t size = sequence_size * member_size;
-        used_memory += size / ALIGNMENT + ((size % ALIGNMENT != 0) ? ALIGNMENT - size % ALIGNMENT : 0);
+        size_t previous_size = operation_buffer_index;
+        get_static_memory(sequence_size * member_size);
+        used_memory += operation_buffer_index - previous_size;
       }else{
         used_memory += sequence_size * member_size;
       }
@@ -336,6 +338,9 @@ size_t micro_ros_utilities_get_static_size(
     name_tree = micro_ros_string_utilities_init("");
   }
 
+  operation_buffer = NULL;
+  operation_buffer_index = 0;
+
   size_t size = handle_message_memory(
     members, NULL, actual_conf, name_tree,
     CALCULATE_SIZE_PREALLOCATED_OPERATION);
@@ -427,7 +432,7 @@ bool micro_ros_utilities_create_static_message_memory(
     micro_ros_string_utilities_destroy(&name_tree);
   }
 
-  return used_size == calculated_size;
+  return used_size == calculated_size && used_size == operation_buffer_index;
 }
 
 bool micro_ros_utilities_destroy_message_memory(
