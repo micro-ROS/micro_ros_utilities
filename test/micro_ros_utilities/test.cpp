@@ -20,7 +20,6 @@
 
 #include <string>
 #include <map>
-#include <utility>
 
 
 TEST(Test, micro_ros_utilities_strings)
