@@ -74,6 +74,11 @@ extern "C" void * allocate(size_t size, void * /* state */)
   return ptr;
 }
 
+extern "C" void * allocate_fail(size_t /* size */, void * /* state */)
+{
+  return NULL;
+}
+
 extern "C" void deallocate(void * pointer, void * /* state */)
 {
   auto it = allocated_memory_map.find(pointer);
@@ -101,14 +106,6 @@ extern "C" void * zero_allocate(
       number_of_elements * size_of_element));
   return ptr;
 }
-
-extern "C" void * zero_allocate_fail(
-  size_t /* number_of_elements */, size_t /* size_of_element */,
-  void * /* state */)
-{
-  return NULL;
-}
-
 
 TEST(Test, default_config)
 {
@@ -151,13 +148,13 @@ TEST(Test, default_config)
   //
   //  dim.label.size -> 0
   //  dim.label.capacity -> 0
-  //  dim.label.data -> 20 chars = 20 B -> We have 10 dim -> 20 B x 10 = 200 B
+  //  dim.label.data -> 20 chars = 20 B -> We have 5 dim -> 20 B x 5 = 100 B
 
   //  dim.size -> 0
   //  dim.stride -> 0
-  //  dim.data -> 10 std_msgs__msg/MultiArrayDimension = 10 * (aligned) 32 B = 320 B
+  //  dim.data -> 5 std_msgs__msg/MultiArrayDimension = 5 * (aligned) 32 B = 160 B
 
-  ASSERT_EQ(size, 520ul);
+  ASSERT_EQ(size, 260ul);
 
   ASSERT_TRUE(
     micro_ros_utilities_create_message_memory(
@@ -294,7 +291,7 @@ TEST(Test, preallocated_custom_config)
   conf.rules = rules;
   conf.n_rules = sizeof(rules) / sizeof(rules[0]);
 
-  size_t size = micro_ros_utilities_get_dynamic_size(
+  size_t size = micro_ros_utilities_get_static_size(
     typesupport,
     conf
   );
@@ -332,22 +329,22 @@ TEST(Test, failures)
   std_msgs__msg__MultiArrayLayout msg;
 
   rcutils_allocator_t test_allocators = {
-    allocate,
+    allocate_fail,
     deallocate,
     reallocate,
-    zero_allocate_fail,
+    zero_allocate,
     NULL
   };
 
   micro_ros_utilities_memory_conf_t conf = {};
   conf.allocator = &test_allocators;
 
-  size_t size = micro_ros_utilities_get_dynamic_size(
+  size_t size = micro_ros_utilities_get_static_size(
     typesupport,
     conf
   );
 
-  size = size - 100;
+  size = size - 3;
 
   uint8_t * static_buffer = reinterpret_cast<uint8_t *>(malloc(size * sizeof(uint8_t)));
 
