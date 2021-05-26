@@ -36,15 +36,16 @@ typedef struct micro_ros_utilities_memory_rule_t
 typedef struct micro_ros_utilities_memory_conf_t
 {
   size_t max_string_capacity;
-  size_t max_ros2_type_sequence;
-  size_t max_basic_type_sequence;
-  size_t n_rules;
+  size_t max_ros2_type_sequence_capacity;
+  size_t max_basic_type_sequence_capacity;
   const micro_ros_utilities_memory_rule_t * rules;
+  size_t n_rules;
   const rcutils_allocator_t * allocator;
 } micro_ros_utilities_memory_conf_t;
 
 // Default memory configuration
-extern const micro_ros_utilities_memory_conf_t memory_conf_default;
+static const micro_ros_utilities_memory_conf_t micro_ros_utilities_memory_conf_default =
+{20, 5, 5, NULL, 0, NULL};
 
 /**
  *  Returns a string with the type instronspection data
@@ -83,6 +84,27 @@ micro_ros_utilities_type_info(
 MICRO_ROS_UTILITIES_PUBLIC
 size_t
 micro_ros_utilities_get_dynamic_size(
+  const rosidl_message_type_support_t * type_support,
+  const micro_ros_utilities_memory_conf_t conf);
+
+/**
+ *  Returns the static memory size that will be used for a type
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] type_support ROS 2 typesupport
+ * \param[in] conf         Utils configurator
+ * \return `size_t` Size in Bytes that will be used
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+size_t
+micro_ros_utilities_get_static_size(
   const rosidl_message_type_support_t * type_support,
   const micro_ros_utilities_memory_conf_t conf);
 

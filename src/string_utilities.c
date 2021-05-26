@@ -27,9 +27,29 @@ rosidl_runtime_c__String micro_ros_string_utilities_init(const char * data)
 
   ret.size = strlen(data);
   ret.capacity = ret.size + 1;
-  ret.data = allocator.zero_allocate(ret.capacity, 1, allocator.state);
+  ret.data = allocator.allocate(ret.capacity, allocator.state);
+  memset(ret.data, 0, ret.capacity);
 
   memcpy(ret.data, data, ret.size);
+
+  return ret;
+}
+
+rosidl_runtime_c__String micro_ros_string_utilities_set(
+  rosidl_runtime_c__String str,
+  const char * data)
+{
+  const rcutils_allocator_t allocator = rcutils_get_default_allocator();
+
+  rosidl_runtime_c__String ret = str;
+  ret.size = strlen(data);
+
+  if (ret.size > ret.capacity) {
+    ret.data = allocator.reallocate(ret.data, ret.size + 1, allocator.state);
+    ret.capacity = ret.size + 1;
+  }
+
+  memcpy(ret.data, data, ret.size + 1);
 
   return ret;
 }
