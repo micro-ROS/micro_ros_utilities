@@ -213,7 +213,8 @@ size_t handle_message_memory(
       }
 
       if (operation == CREATE_OPERATION) {
-        ptr->data = allocator.zero_allocate(sequence_size, member_size, allocator.state);
+        ptr->data = allocator.allocate(sequence_size * member_size, allocator.state);
+        memset(ptr->data, 0, sequence_size * member_size);
         if (ptr->data == NULL) {
           return 0;
         }

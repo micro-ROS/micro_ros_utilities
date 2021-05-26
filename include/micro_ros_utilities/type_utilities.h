@@ -44,7 +44,7 @@ typedef struct micro_ros_utilities_memory_conf_t
 } micro_ros_utilities_memory_conf_t;
 
 // Default memory configuration
-const micro_ros_utilities_memory_conf_t micro_ros_utilities_memory_conf_default =
+static const micro_ros_utilities_memory_conf_t micro_ros_utilities_memory_conf_default =
 {20, 5, 5, NULL, 0, NULL};
 
 /**
