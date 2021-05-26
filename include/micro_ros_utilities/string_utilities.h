@@ -21,10 +21,10 @@ extern "C"
 #endif  // if __cplusplus
 
 #include <rosidl_runtime_c/string.h>
-
+#include <micro_ros_utilities/visibility_control.h>
 
 /**
- *  Initializes a RCLC parameter server in a node with default configuration
+ *  Create a rosidl_runtime_c__String from a char pointer
  *
  * <hr>
  * Attribute          | Adherence
@@ -32,22 +32,89 @@ extern "C"
  * Allocates Memory   | Yes
  * Thread-Safe        | No
  * Uses Atomics       | No
- * Lock-Free          | No
+ * Lock-Free          | Yes
  *
- * \param[inout] parameter_server preallocated rclc_parameter_server_t
- * \param[in] node related node
- * \return `RCL_RET_OK` if the \p parameter_server was initialized successfully
+ * \param[in] data char pointer
+ * \return `rosidl_runtime_c__String` string containing data
  */
+MICRO_ROS_UTILITIES_PUBLIC
+rosidl_runtime_c__String
+micro_ros_string_utilities_init(const char * data);
 
-rosidl_runtime_c__String micro_ros_string_utilities_init(const char * data);
-const char * micro_ros_string_utilities_get_c_str(rosidl_runtime_c__String str);
+/**
+ *  Returns the char pointer to the rosidl_runtime_c__String data
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] str a rosidl_runtime_c__String
+ * \return `const char` char pointer
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+const char *
+micro_ros_string_utilities_get_c_str(rosidl_runtime_c__String str);
+
+/**
+ *  Appends a char pointer to the end of a rosidl_runtime_c__String
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] str   a rosidl_runtime_c__String
+ * \param[in] data  characters to append
+ * \return `rosidl_runtime_c__String` new string
+ */
 rosidl_runtime_c__String micro_ros_string_utilities_append(
   rosidl_runtime_c__String str,
   const char * data);
-rosidl_runtime_c__String micro_ros_string_utilities_remove_tail_chars(
+
+/**
+ *  Removes characters from the end of a string
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] str   a rosidl_runtime_c__String
+ * \param[in] n     number of characters to remove
+ * \return `rosidl_runtime_c__String` new string
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+rosidl_runtime_c__String
+micro_ros_string_utilities_remove_tail_chars(
   rosidl_runtime_c__String str,
   const size_t n);
-void micro_ros_string_utilities_destroy(rosidl_runtime_c__String * str);
+
+/**
+ *  Destroys a  rosidl_runtime_c__String
+ *
+ * <hr>
+ * Attribute          | Adherence
+ * ------------------ | -------------
+ * Allocates Memory   | Yes
+ * Thread-Safe        | No
+ * Uses Atomics       | No
+ * Lock-Free          | Yes
+ *
+ * \param[in] str   a rosidl_runtime_c__String
+ */
+MICRO_ROS_UTILITIES_PUBLIC
+void
+micro_ros_string_utilities_destroy(rosidl_runtime_c__String * str);
 
 #if __cplusplus
 }
