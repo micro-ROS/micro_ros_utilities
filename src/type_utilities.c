@@ -54,13 +54,13 @@ static micro_ros_utilities_memory_conf_t get_configuration(
 {
   micro_ros_utilities_memory_conf_t ret = memory_conf_default;
   ret.max_basic_type_sequence_capacity =
-    (conf.max_basic_type_sequence_capacity ==0) ?
-      memory_conf_default.max_basic_type_sequence_capacity : conf.max_basic_type_sequence_capacity;
+    (conf.max_basic_type_sequence_capacity == 0) ?
+    memory_conf_default.max_basic_type_sequence_capacity : conf.max_basic_type_sequence_capacity;
   ret.max_ros2_type_sequence_capacity =
     (conf.max_ros2_type_sequence_capacity == 0) ?
     memory_conf_default.max_ros2_type_sequence_capacity : conf.max_ros2_type_sequence_capacity;
   ret.max_string_capacity =
-    (conf.max_string_capacity ==0) ?
+    (conf.max_string_capacity == 0) ?
     memory_conf_default.max_string_capacity : conf.max_string_capacity;
 
   ret.rules = (conf.rules == NULL) ? memory_conf_default.rules : conf.rules;
