@@ -17,6 +17,7 @@
 #include <micro_ros_utilities/string_utilities.h>
 #include <micro_ros_utilities/type_utilities.h>
 #include <std_msgs/msg/multi_array_layout.h>
+#include <control_msgs/msg/joint_jog.h>
 
 #include <string>
 #include <map>
@@ -361,4 +362,61 @@ TEST(Test, failures)
       typesupport,
       &msg,
       conf));
+}
+
+TEST(Test, control_msgs__msg__JointJog)
+{
+  control_msgs__msg__JointJog msg;
+
+  micro_ros_utilities_memory_conf_t conf = {};
+  conf.max_string_capacity = 50;
+  conf.max_ros2_type_sequence_capacity = 5;
+  conf.max_basic_type_sequence_capacity = 5;
+  micro_ros_utilities_memory_rule_t rules[] = {
+    {"header.frame_id", 10},
+    {"joint_names", 3},
+    {"displacements", 8}
+  };
+  conf.rules = rules;
+  conf.n_rules = sizeof(rules) / sizeof(rules[0]);
+
+  // size_t dynamic_size = micro_ros_utilities_get_dynamic_size(
+  //   ROSIDL_GET_MSG_TYPE_SUPPORT(control_msgs, msg, JointJog),
+  //   conf
+  // );
+
+  // // The total (stack, static & dynamic) memory usage of a packet will be:
+
+  // size_t message_total_size = dynamic_size + sizeof(control_msgs__msg__JointJog);
+
+  // The message dynamic memory can be allocated using the following call.
+  // This will use rcutils default allocators for getting memory.
+
+  ASSERT_TRUE(micro_ros_utilities_create_message_memory(
+    ROSIDL_GET_MSG_TYPE_SUPPORT(control_msgs, msg, JointJog),
+    &msg,
+    conf
+  ));
+
+  // The message dynamic memory can also be allocated using a buffer.
+  // This will NOT use dynamic memory for the allocation.
+  // If no rules set in the conf, no dynamic allocation is guaranteed.
+  // This method will use contiguos memory and will not take into account aligment
+  // so handling statically allocated msg can be less efficient that dynamic ones
+
+  // bool success = micro_ros_utilities_create_static_message_memory(
+  //   ROSIDL_GET_MSG_TYPE_SUPPORT(control_msgs, msg, JointJog),
+  //   &msg,
+  //   conf,
+  //   my_buffer,
+  //   sizeof(my_buffer)
+  // );
+
+  // Dynamically allocated messages can be destroyed using:
+
+  // success &= micro_ros_utilities_destroy_message_memory(
+  //   ROSIDL_GET_MSG_TYPE_SUPPORT(control_msgs, msg, JointJog),
+  //   &msg,
+  //   conf
+  // );
 }

@@ -61,6 +61,7 @@ if(BUILD_TESTING)
   find_package(osrf_testing_tools_cpp REQUIRED)
 
   find_package(std_msgs REQUIRED)
+  find_package(control_msgs REQUIRED)
 
   ament_lint_auto_find_test_dependencies()
 
@@ -77,6 +78,7 @@ if(BUILD_TESTING)
     rcutils
     osrf_testing_tools_cpp
     std_msgs
+    control_msgs
   )
 endif()
 
