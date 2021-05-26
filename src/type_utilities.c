@@ -52,18 +52,23 @@ void * get_static_memory(size_t size)
 static micro_ros_utilities_memory_conf_t get_configuration(
   const micro_ros_utilities_memory_conf_t conf)
 {
-  micro_ros_utilities_memory_conf_t ret = memory_conf_default;
+  micro_ros_utilities_memory_conf_t ret = micro_ros_utilities_memory_conf_default;
+
   ret.max_basic_type_sequence_capacity =
     (conf.max_basic_type_sequence_capacity == 0) ?
-    memory_conf_default.max_basic_type_sequence_capacity : conf.max_basic_type_sequence_capacity;
+    micro_ros_utilities_memory_conf_default.max_basic_type_sequence_capacity :
+    conf.max_basic_type_sequence_capacity;
+
   ret.max_ros2_type_sequence_capacity =
     (conf.max_ros2_type_sequence_capacity == 0) ?
-    memory_conf_default.max_ros2_type_sequence_capacity : conf.max_ros2_type_sequence_capacity;
+    micro_ros_utilities_memory_conf_default.max_ros2_type_sequence_capacity :
+    conf.max_ros2_type_sequence_capacity;
+
   ret.max_string_capacity =
     (conf.max_string_capacity == 0) ?
-    memory_conf_default.max_string_capacity : conf.max_string_capacity;
+    micro_ros_utilities_memory_conf_default.max_string_capacity : conf.max_string_capacity;
 
-  ret.rules = (conf.rules == NULL) ? memory_conf_default.rules : conf.rules;
+  ret.rules = (conf.rules == NULL) ? micro_ros_utilities_memory_conf_default.rules : conf.rules;
   ret.n_rules = conf.n_rules;
 
   ret.allocator = conf.allocator;
@@ -111,7 +116,8 @@ void print_type_info(
       m.type_id_ == TYPE_COMPOSED ? rec_members->message_namespace_ : "",
       m.type_id_ == TYPE_COMPOSED ? "/" : "",
       m.type_id_ == TYPE_COMPOSED ? rec_members->message_name_ : "",
-      m.type_id_ == TYPE_STRING || ((m.is_array_) && (m.array_size_ == 0)) ? " <- This should be inited" : ""
+      m.type_id_ == TYPE_STRING || ((m.is_array_) && (m.array_size_ == 0)) ?
+      " <- This should be inited" : ""
     );
 
     *out = micro_ros_string_utilities_append(*out, buffer);

@@ -174,7 +174,9 @@ TEST(Test, default_config)
 
   ASSERT_EQ(msg.data_offset, 0ul);
   ASSERT_EQ(msg.dim.size, 0ul);
-  ASSERT_EQ(msg.dim.capacity, memory_conf_default.max_ros2_type_sequence_capacity);
+  ASSERT_EQ(
+    msg.dim.capacity,
+    micro_ros_utilities_memory_conf_default.max_ros2_type_sequence_capacity);
   ASSERT_NE(msg.dim.data, nullptr);
 
   for (size_t i = 0; i < msg.dim.capacity; i++) {
@@ -182,7 +184,9 @@ TEST(Test, default_config)
     ASSERT_EQ(msg.dim.data[i].stride, 0ul);
     ASSERT_NE(msg.dim.data[i].label.data, nullptr);
     ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
-    ASSERT_EQ(msg.dim.data[i].label.capacity, memory_conf_default.max_string_capacity);
+    ASSERT_EQ(
+      msg.dim.data[i].label.capacity,
+      micro_ros_utilities_memory_conf_default.max_string_capacity);
   }
 
   ASSERT_TRUE(
