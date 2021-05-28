@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(micro_ros_utilities)
 
+option(BUILD_DOCUMENTATION "Use doxygen to create package documentation" OFF)
+
 if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 11)
 endif()
@@ -78,6 +80,48 @@ if(BUILD_TESTING)
     osrf_testing_tools_cpp
     std_msgs
   )
+endif()
+
+#################################################
+# documentation
+#################################################
+if(BUILD_DOCUMENTATION)
+    find_package(Doxygen)
+    if(NOT DOXYGEN_FOUND)
+        message(FATAL_ERROR "doxygen is needed to build the documentation. Please install it correctly")
+    endif()
+    if(UNIX)
+        find_program(DOXYFILE_MAKE make)
+        if(DOXYFILE_MAKE)
+            message(STATUS "Found Make: ${DOXYFILE_MAKE}")
+        else()
+            message(FATAL_ERROR "make is needed to build the documentation. Please install it correctly")
+        endif()
+    elseif(WIN32)
+        set(DOXYFILE_MAKE make.bat)
+    endif()
+
+    # Target to create documentation directories
+    file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/doc)
+    add_custom_target(docdirs
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/doc/api_reference
+        COMMENT "Creating documentation directory" VERBATIM)
+
+    ### Doxygen ########################3
+    # Configure the template doxyfile for or specific project
+    configure_file(doxyfile.in ${PROJECT_BINARY_DIR}/doxyfile @ONLY IMMEDIATE)
+    # Add custom target to run doxygen when ever the project is build
+    add_custom_target(doxygen
+        COMMAND "${DOXYGEN_EXECUTABLE}" "${PROJECT_BINARY_DIR}/doxyfile"
+        SOURCES "${PROJECT_BINARY_DIR}/doxyfile"
+        COMMENT "Generating API documentation with doxygen" VERBATIM)
+
+    add_dependencies(doxygen docdirs)
+
+    add_custom_target(doc ALL
+    COMMENT "Generated project documentation" VERBATIM)
+
+    add_dependencies(doc doxygen)
 endif()
 
 #################################################
