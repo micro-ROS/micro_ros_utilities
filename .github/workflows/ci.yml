@@ -27,10 +27,10 @@ jobs:
       image: ${{ matrix.docker_image }}
     steps:
     - uses: actions/checkout@v2
-    - uses: ros-tooling/setup-ros@v0.2.1
+    - uses: ros-tooling/setup-ros@0.2.1
       with:
         required-ros-distributions: ${{ matrix.ros_distribution }}
-    - uses : ros-tooling/action-ros-ci@v0.2
+    - uses : ros-tooling/action-ros-ci@0.2.1
       with:
         package-name: "micro_ros_utilities"
         vcs-repo-file-url: dependencies.repos
