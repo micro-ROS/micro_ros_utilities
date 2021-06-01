@@ -2,9 +2,9 @@ name: CI micro_ros_utilities
 
 on:
   push:
-    branches: [ master, galactic ]
+    branches: [ main, galactic ]
   pull_request:
-    branches: [ master, galactic ]
+    branches: [ main, galactic ]
   schedule:
     # Run once per day to detect broken dependencies.
     - cron: '33 6 * * *'
