@@ -46,7 +46,7 @@ static size_t operation_buffer_index;
 void * get_static_memory(size_t size)
 {
   // Ensure alignment
-  size = (size + ALIGNMENT-1) & (~(ALIGNMENT-1));
+  size = (size + ALIGNMENT - 1) & (~(ALIGNMENT - 1));
 
   void * ptr = (operation_buffer == NULL) ?
     NULL : &operation_buffer[operation_buffer_index];
