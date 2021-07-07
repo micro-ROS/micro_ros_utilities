@@ -43,7 +43,7 @@ rosidl_runtime_c__String micro_ros_string_utilities_init_with_size(const size_t 
 
   ret.size = 0;
   ret.capacity = size + 1;
-  ret.data = allocator.allocate(size, allocator.state);
+  ret.data = allocator.allocate(ret.capacity, allocator.state);
   memset(ret.data, 0, ret.capacity);
 
   return ret;
