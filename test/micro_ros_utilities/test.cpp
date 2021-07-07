@@ -53,7 +53,7 @@ TEST(Test, micro_ros_utilities_strings)
 
   std::string append_2("more");
   std::string complete_2 = data;
-  complete_2.append(append2);
+  complete_2.append(append_2);
 
   str = micro_ros_string_utilities_append(str, append_2.c_str());
 
