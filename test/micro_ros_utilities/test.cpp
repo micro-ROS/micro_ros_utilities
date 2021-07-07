@@ -25,6 +25,13 @@
 
 TEST(Test, micro_ros_utilities_strings)
 {
+  size_t size = 10;
+  rosidl_runtime_c__String str_with_size = micro_ros_string_utilities_init_with_size(size);
+  ASSERT_FALSE(str_with_size.data == NULL);
+  ASSERT_EQ(0UL, strlen(str_with_size.data));
+  ASSERT_EQ(0UL, str_with_size.size);
+  ASSERT_EQ(size + 1, str_with_size.capacity);
+
   std::string data("Test string");
   rosidl_runtime_c__String str = micro_ros_string_utilities_init(data.c_str());
 
@@ -85,15 +92,15 @@ TEST(Test, micro_ros_utilities_strings)
   micro_ros_string_utilities_destroy(&str);
 
   ASSERT_TRUE(str.data == NULL);
-  ASSERT_EQ(str.size, 0ul);
-  ASSERT_EQ(str.capacity, 0ul);
+  ASSERT_EQ(str.size, 0UL);
+  ASSERT_EQ(str.capacity, 0UL);
 
   rosidl_runtime_c__String empty = micro_ros_string_utilities_init("");
 
   ASSERT_FALSE(empty.data == NULL);
   ASSERT_EQ(empty.data[0], '\0');
-  ASSERT_EQ(empty.size, 0ul);
-  ASSERT_EQ(empty.capacity, 1ul);
+  ASSERT_EQ(empty.size, 0UL);
+  ASSERT_EQ(empty.capacity, 1UL);
 }
 
 static std::map<void *, size_t> allocated_memory_map;
@@ -149,8 +156,8 @@ TEST(Test, default_config)
   std::cout << ret.data;
 
   ASSERT_NE(ret.data, nullptr);
-  ASSERT_NE(ret.size, 0ul);
-  ASSERT_NE(ret.capacity, 0ul);
+  ASSERT_NE(ret.size, 0UL);
+  ASSERT_NE(ret.capacity, 0UL);
 
   rcutils_allocator_t test_allocators = {
     allocate,
@@ -185,7 +192,7 @@ TEST(Test, default_config)
   //  dim.stride -> 0
   //  dim.data -> 5 std_msgs__msg/MultiArrayDimension = 5 * (aligned) 32 B = 160 B
 
-  ASSERT_EQ(size, 260ul);
+  ASSERT_EQ(size, 260UL);
 
   ASSERT_TRUE(
     micro_ros_utilities_create_message_memory(
@@ -200,18 +207,18 @@ TEST(Test, default_config)
 
   ASSERT_EQ(allocated_memory, size);
 
-  ASSERT_EQ(msg.data_offset, 0ul);
-  ASSERT_EQ(msg.dim.size, 0ul);
+  ASSERT_EQ(msg.data_offset, 0UL);
+  ASSERT_EQ(msg.dim.size, 0UL);
   ASSERT_EQ(
     msg.dim.capacity,
     micro_ros_utilities_memory_conf_default.max_ros2_type_sequence_capacity);
   ASSERT_NE(msg.dim.data, nullptr);
 
   for (size_t i = 0; i < msg.dim.capacity; i++) {
-    ASSERT_EQ(msg.dim.data[i].size, 0ul);
-    ASSERT_EQ(msg.dim.data[i].stride, 0ul);
+    ASSERT_EQ(msg.dim.data[i].size, 0UL);
+    ASSERT_EQ(msg.dim.data[i].stride, 0UL);
     ASSERT_NE(msg.dim.data[i].label.data, nullptr);
-    ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].label.size, 0UL);
     ASSERT_EQ(
       msg.dim.data[i].label.capacity,
       micro_ros_utilities_memory_conf_default.max_string_capacity);
@@ -228,7 +235,7 @@ TEST(Test, default_config)
     allocated_memory += x.second;
   }
 
-  ASSERT_EQ(allocated_memory, 0ul);
+  ASSERT_EQ(allocated_memory, 0UL);
 }
 
 
@@ -278,16 +285,16 @@ TEST(Test, custom_config)
 
   ASSERT_EQ(allocated_memory, size);
 
-  ASSERT_EQ(msg.data_offset, 0ul);
-  ASSERT_EQ(msg.dim.size, 0ul);
+  ASSERT_EQ(msg.data_offset, 0UL);
+  ASSERT_EQ(msg.dim.size, 0UL);
   ASSERT_EQ(msg.dim.capacity, rules[0].size);
   ASSERT_NE(msg.dim.data, nullptr);
 
   for (size_t i = 0; i < msg.dim.capacity; i++) {
-    ASSERT_EQ(msg.dim.data[i].size, 0ul);
-    ASSERT_EQ(msg.dim.data[i].stride, 0ul);
+    ASSERT_EQ(msg.dim.data[i].size, 0UL);
+    ASSERT_EQ(msg.dim.data[i].stride, 0UL);
     ASSERT_NE(msg.dim.data[i].label.data, nullptr);
-    ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].label.size, 0UL);
     ASSERT_EQ(msg.dim.data[i].label.capacity, rules[1].size);
   }
 
@@ -302,7 +309,7 @@ TEST(Test, custom_config)
     allocated_memory += x.second;
   }
 
-  ASSERT_EQ(allocated_memory, 0ul);
+  ASSERT_EQ(allocated_memory, 0UL);
 }
 
 TEST(Test, preallocated_custom_config)
@@ -337,16 +344,16 @@ TEST(Test, preallocated_custom_config)
       static_buffer,
       size));
 
-  ASSERT_EQ(msg.data_offset, 0ul);
-  ASSERT_EQ(msg.dim.size, 0ul);
+  ASSERT_EQ(msg.data_offset, 0UL);
+  ASSERT_EQ(msg.dim.size, 0UL);
   ASSERT_EQ(msg.dim.capacity, rules[0].size);
   ASSERT_NE(msg.dim.data, nullptr);
 
   for (size_t i = 0; i < msg.dim.capacity; i++) {
-    ASSERT_EQ(msg.dim.data[i].size, 0ul);
-    ASSERT_EQ(msg.dim.data[i].stride, 0ul);
+    ASSERT_EQ(msg.dim.data[i].size, 0UL);
+    ASSERT_EQ(msg.dim.data[i].stride, 0UL);
     ASSERT_NE(msg.dim.data[i].label.data, nullptr);
-    ASSERT_EQ(msg.dim.data[i].label.size, 0ul);
+    ASSERT_EQ(msg.dim.data[i].label.size, 0UL);
     ASSERT_EQ(msg.dim.data[i].label.capacity, rules[1].size);
   }
 }
