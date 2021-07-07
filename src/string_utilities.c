@@ -35,6 +35,20 @@ rosidl_runtime_c__String micro_ros_string_utilities_init(const char * data)
   return ret;
 }
 
+rosidl_runtime_c__String micro_ros_string_utilities_init_with_size(const size_t size)
+{
+  const rcutils_allocator_t allocator = rcutils_get_default_allocator();
+
+  rosidl_runtime_c__String ret;
+
+  ret.size = 0;
+  ret.capacity = size + 1;
+  ret.data = allocator.allocate(ret.capacity, allocator.state);
+  memset(ret.data, 0, ret.capacity);
+
+  return ret;
+}
+
 rosidl_runtime_c__String micro_ros_string_utilities_set(
   rosidl_runtime_c__String str,
   const char * data)

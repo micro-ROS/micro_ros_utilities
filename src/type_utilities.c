@@ -284,6 +284,34 @@ size_t handle_message_memory(
   return used_memory;
 }
 
+size_t get_longest_member_name(
+  const rosidl_typesupport_introspection_c__MessageMembers * members)
+{
+  size_t max_lenght = 0;
+
+  for (size_t i = 0; i < members->member_count_; i++) {
+    rosidl_typesupport_introspection_c__MessageMember m = members->members_[i];
+
+    size_t biggest_child_name = 0;
+
+    if (m.type_id_ == TYPE_COMPOSED) {
+      const rosidl_message_type_support_t * introspection = get_message_typesupport_handle(
+        m.members_, rosidl_typesupport_introspection_c__identifier);
+      rosidl_typesupport_introspection_c__MessageMembers * rec_members =
+        (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
+
+      biggest_child_name = get_longest_member_name(rec_members);
+    }
+
+    size_t current_length = biggest_child_name + strlen(m.name_) + 1;
+    if (current_length > max_lenght) {
+      max_lenght = current_length;
+    }
+  }
+
+  return max_lenght;
+}
+
 size_t micro_ros_utilities_get_dynamic_size(
   const rosidl_message_type_support_t * type_support,
   const micro_ros_utilities_memory_conf_t conf)
@@ -302,7 +330,8 @@ size_t micro_ros_utilities_get_dynamic_size(
   rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
-    name_tree = micro_ros_string_utilities_init("");
+    size_t max_length = get_longest_member_name(members);
+    name_tree = micro_ros_string_utilities_init_with_size(max_length);
   }
 
   size_t size = handle_message_memory(
@@ -334,7 +363,8 @@ size_t micro_ros_utilities_get_static_size(
   rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
-    name_tree = micro_ros_string_utilities_init("");
+    size_t max_length = get_longest_member_name(members);
+    name_tree = micro_ros_string_utilities_init_with_size(max_length);
   }
 
   operation_buffer = NULL;
@@ -372,7 +402,8 @@ bool micro_ros_utilities_create_message_memory(
   rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
-    name_tree = micro_ros_string_utilities_init("");
+    size_t max_length = get_longest_member_name(members);
+    name_tree = micro_ros_string_utilities_init_with_size(max_length);
   }
 
   memset(ros_msg, 0, members->size_of_);
@@ -419,7 +450,8 @@ bool micro_ros_utilities_create_static_message_memory(
   rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
-    name_tree = micro_ros_string_utilities_init("");
+    size_t max_length = get_longest_member_name(members);
+    name_tree = micro_ros_string_utilities_init_with_size(max_length);
   }
 
   memset(ros_msg, 0, members->size_of_);
@@ -455,7 +487,8 @@ bool micro_ros_utilities_destroy_message_memory(
   rosidl_runtime_c__String name_tree = {0};
 
   if (conf.n_rules > 0) {
-    name_tree = micro_ros_string_utilities_init("");
+    size_t max_length = get_longest_member_name(members);
+    name_tree = micro_ros_string_utilities_init_with_size(max_length);
   }
 
   size_t released_size = handle_message_memory(
