@@ -60,7 +60,6 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE) # No copyright header check since link to NOTICE file is not recognized properly.
-  find_package(osrf_testing_tools_cpp REQUIRED)
 
   find_package(std_msgs REQUIRED)
 
@@ -77,7 +76,6 @@ if(BUILD_TESTING)
     rosidl_generator_c
     rosidl_runtime_c
     rcutils
-    osrf_testing_tools_cpp
     std_msgs
   )
 endif()

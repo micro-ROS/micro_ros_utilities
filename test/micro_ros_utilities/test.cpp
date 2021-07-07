@@ -30,6 +30,26 @@ TEST(Test, micro_ros_utilities_strings)
 
   ASSERT_FALSE(str.data == NULL);
   ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
+  ASSERT_EQ(data.length(), strlen(str.data));
+  ASSERT_EQ(data.length(), str.size);
+  ASSERT_EQ(data.length() + 1, str.capacity);
+
+  data.append(".");
+  str = micro_ros_string_utilities_append(str, ".");
+
+  ASSERT_FALSE(str.data == NULL);
+  ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
+  ASSERT_EQ(data.length(), strlen(str.data));
+  ASSERT_EQ(data.length(), str.size);
+  ASSERT_EQ(data.length() + 1, str.capacity);
+
+  micro_ros_string_utilities_destroy(&str);
+
+  data = "Test string";
+  str = micro_ros_string_utilities_init(data.c_str());
+
+  ASSERT_FALSE(str.data == NULL);
+  ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
   ASSERT_EQ(data.length(), str.size);
   ASSERT_EQ(data.length() + 1, str.capacity);
 
@@ -49,6 +69,17 @@ TEST(Test, micro_ros_utilities_strings)
   ASSERT_FALSE(str.data == NULL);
   ASSERT_EQ(strcmp(data.c_str(), str.data), 0);
   ASSERT_EQ(data.length(), str.size);
+  ASSERT_EQ(complete.length() + 1, str.capacity);
+
+  std::string append_2("more");
+  std::string complete_2 = data;
+  complete_2.append(append_2);
+
+  str = micro_ros_string_utilities_append(str, append_2.c_str());
+
+  ASSERT_FALSE(str.data == NULL);
+  ASSERT_EQ(strcmp(complete_2.c_str(), str.data), 0);
+  ASSERT_EQ(complete_2.length(), str.size);
   ASSERT_EQ(complete.length() + 1, str.capacity);
 
   micro_ros_string_utilities_destroy(&str);

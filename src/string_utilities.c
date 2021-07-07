@@ -69,7 +69,7 @@ rosidl_runtime_c__String micro_ros_string_utilities_append(
   rosidl_runtime_c__String ret = str;
   size_t append_size = strlen(data);
 
-  if (append_size + ret.size > ret.capacity) {
+  if (append_size + ret.size >= ret.capacity) {
     ret.data = allocator.reallocate(ret.data, ret.size + append_size + 1, allocator.state);
     ret.capacity = ret.size + append_size + 1;
   }
