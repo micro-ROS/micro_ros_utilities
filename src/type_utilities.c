@@ -300,11 +300,11 @@ size_t get_longest_member_name(
       rosidl_typesupport_introspection_c__MessageMembers * rec_members =
         (rosidl_typesupport_introspection_c__MessageMembers *)introspection->data;
 
-        biggest_child_name = get_longest_member_name(rec_members);
+      biggest_child_name = get_longest_member_name(rec_members);
     }
 
     size_t current_length = biggest_child_name + strlen(m.name_) + 1;
-    if (current_length > max_lenght){
+    if (current_length > max_lenght) {
       max_lenght = current_length;
     }
   }
