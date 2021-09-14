@@ -50,7 +50,7 @@ rosidl_runtime_c__String micro_ros_string_utilities_init_with_size(const size_t 
 }
 
 rosidl_runtime_c__String micro_ros_string_utilities_set(
-  rosidl_runtime_c__String str,
+  const rosidl_runtime_c__String str,
   const char * data)
 {
   const rcutils_allocator_t allocator = rcutils_get_default_allocator();
@@ -68,14 +68,14 @@ rosidl_runtime_c__String micro_ros_string_utilities_set(
   return ret;
 }
 
-const char * micro_ros_string_utilities_get_c_str(rosidl_runtime_c__String str)
+const char * micro_ros_string_utilities_get_c_str(const rosidl_runtime_c__String str)
 {
   return (const char *) str.data;
 }
 
 
 rosidl_runtime_c__String micro_ros_string_utilities_append(
-  rosidl_runtime_c__String str,
+  const rosidl_runtime_c__String str,
   const char * data)
 {
   const rcutils_allocator_t allocator = rcutils_get_default_allocator();
@@ -96,7 +96,7 @@ rosidl_runtime_c__String micro_ros_string_utilities_append(
 }
 
 rosidl_runtime_c__String micro_ros_string_utilities_remove_tail_chars(
-  rosidl_runtime_c__String str,
+  const rosidl_runtime_c__String str,
   const size_t n)
 {
   rosidl_runtime_c__String ret = str;
@@ -108,7 +108,7 @@ rosidl_runtime_c__String micro_ros_string_utilities_remove_tail_chars(
 }
 
 
-void micro_ros_string_utilities_destroy(rosidl_runtime_c__String * str)
+void micro_ros_string_utilities_destroy(rosidl_runtime_c__String * const str)
 {
   const rcutils_allocator_t allocator = rcutils_get_default_allocator();
 
