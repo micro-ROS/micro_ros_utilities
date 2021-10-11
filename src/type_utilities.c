@@ -15,6 +15,7 @@
 #include <micro_ros_utilities/type_utilities.h>
 
 #include <string.h>
+#include <stdio.h>
 
 #include <rosidl_typesupport_introspection_c/identifier.h>
 #include <rosidl_typesupport_introspection_c/field_types.h>
