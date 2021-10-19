@@ -92,7 +92,7 @@ void print_type_info(
 
   if (level == 0) {
     snprintf(
-      buffer, sizeof(buffer), "%sIntrospection for %s/%s - %d members, %ld B\n",
+      buffer, sizeof(buffer), "%sIntrospection for %s/%s - %d members, %zd B\n",
       indent_buffer.data,
       members->message_namespace_,
       members->message_name_,
