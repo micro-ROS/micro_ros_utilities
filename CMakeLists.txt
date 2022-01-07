@@ -62,6 +62,7 @@ if(BUILD_TESTING)
   set(ament_cmake_copyright_FOUND TRUE) # No copyright header check since link to NOTICE file is not recognized properly.
 
   find_package(std_msgs REQUIRED)
+  find_package(trajectory_msgs REQUIRED)
 
   ament_lint_auto_find_test_dependencies()
 
@@ -77,6 +78,7 @@ if(BUILD_TESTING)
     rosidl_runtime_c
     rcutils
     std_msgs
+    trajectory_msgs
   )
 endif()
 
