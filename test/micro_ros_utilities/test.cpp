@@ -427,6 +427,7 @@ TEST(Test, string_sequence_regression)
     micro_ros_utilities_memory_conf_t conf = {};
     micro_ros_utilities_memory_rule_t rules[] = {
       {"joint_names", 16},
+      {"joint_names.data", 5},
     };
 
     conf.rules = rules;
@@ -451,9 +452,7 @@ TEST(Test, string_sequence_regression)
 
     for (size_t i = 0; i < msg.joint_names.capacity; i++) {
       ASSERT_EQ(msg.joint_names.data[i].size, 0UL);
-      ASSERT_EQ(
-        msg.joint_names.data[i].capacity,
-        micro_ros_utilities_memory_conf_default.max_string_capacity);
+      ASSERT_EQ(msg.joint_names.data[i].capacity, rules[1].size);
       ASSERT_NE(msg.joint_names.data[i].data, nullptr);
     }
 
