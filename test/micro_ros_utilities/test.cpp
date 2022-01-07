@@ -404,7 +404,6 @@ TEST(Test, failures)
 
 TEST(Test, string_sequence_regression)
 {
-  allocated_memory_map.clear();
   rcutils_allocator_t test_allocators = {
     allocate,
     deallocate,
@@ -412,6 +411,8 @@ TEST(Test, string_sequence_regression)
     zero_allocate,
     NULL
   };
+
+  allocated_memory_map.clear();
 
   const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(
     trajectory_msgs, msg,
