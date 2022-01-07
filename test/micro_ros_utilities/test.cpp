@@ -17,6 +17,7 @@
 #include <micro_ros_utilities/string_utilities.h>
 #include <micro_ros_utilities/type_utilities.h>
 #include <std_msgs/msg/multi_array_layout.h>
+#include <trajectory_msgs/msg/joint_trajectory.h>
 
 #include <string>
 #include <map>
@@ -399,4 +400,131 @@ TEST(Test, failures)
       typesupport,
       &msg,
       conf));
+}
+
+TEST(Test, string_sequence_regression)
+{
+  allocated_memory_map.clear();
+  rcutils_allocator_t test_allocators = {
+    allocate,
+    deallocate,
+    reallocate,
+    zero_allocate,
+    NULL
+  };
+
+  const rosidl_message_type_support_t * typesupport = ROSIDL_GET_MSG_TYPE_SUPPORT(
+    trajectory_msgs, msg,
+    JointTrajectory);
+
+  size_t allocated_memory = 0;
+
+  // Dynamic memory creation and destruction
+  {
+    trajectory_msgs__msg__JointTrajectory msg;
+
+    micro_ros_utilities_memory_conf_t conf = {};
+    micro_ros_utilities_memory_rule_t rules[] = {
+      {"joint_names", 16},
+    };
+
+    conf.rules = rules;
+    conf.n_rules = sizeof(rules) / sizeof(rules[0]);
+    conf.allocator = &test_allocators;
+
+    size_t size = micro_ros_utilities_get_dynamic_size(
+      typesupport,
+      conf
+    );
+
+    ASSERT_TRUE(
+      micro_ros_utilities_create_message_memory(
+        typesupport,
+        &msg,
+        conf)
+    );
+
+    ASSERT_EQ(msg.joint_names.size, 0UL);
+    ASSERT_EQ(msg.joint_names.capacity, rules[0].size);
+    ASSERT_NE(msg.joint_names.data, nullptr);
+
+    for (size_t i = 0; i < msg.joint_names.capacity; i++) {
+      ASSERT_EQ(msg.joint_names.data[i].size, 0UL);
+      ASSERT_EQ(
+        msg.joint_names.data[i].capacity,
+        micro_ros_utilities_memory_conf_default.max_string_capacity);
+      ASSERT_NE(msg.joint_names.data[i].data, nullptr);
+    }
+
+    allocated_memory = 0;
+    for (auto const & x : allocated_memory_map) {
+      allocated_memory += x.second;
+    }
+
+    ASSERT_EQ(allocated_memory, size);
+
+    ASSERT_TRUE(
+      micro_ros_utilities_destroy_message_memory(
+        typesupport,
+        &msg,
+        conf)
+    );
+
+    allocated_memory = 0;
+    for (auto const & x : allocated_memory_map) {
+      allocated_memory += x.second;
+    }
+
+    ASSERT_EQ(allocated_memory, 0UL);
+  }
+
+  // Static memory creation
+  {
+    trajectory_msgs__msg__JointTrajectory msg;
+
+    micro_ros_utilities_memory_conf_t conf = {};
+    micro_ros_utilities_memory_rule_t rules[] = {
+      {"joint_names", 16},
+    };
+
+    conf.rules = rules;
+    conf.n_rules = sizeof(rules) / sizeof(rules[0]);
+    conf.allocator = &test_allocators;
+
+    size_t size = micro_ros_utilities_get_static_size(
+      typesupport,
+      conf
+    );
+
+    uint8_t * buffer = reinterpret_cast<uint8_t *>(malloc(size * sizeof(uint8_t)));
+    memset(buffer, 0, size);
+
+    ASSERT_TRUE(
+      micro_ros_utilities_create_static_message_memory(
+        typesupport,
+        &msg,
+        conf,
+        buffer,
+        size)
+    );
+
+    ASSERT_EQ(msg.joint_names.size, 0UL);
+    ASSERT_EQ(msg.joint_names.capacity, rules[0].size);
+    ASSERT_NE(msg.joint_names.data, nullptr);
+
+    for (size_t i = 0; i < msg.joint_names.capacity; i++) {
+      ASSERT_EQ(msg.joint_names.data[i].size, 0UL);
+      ASSERT_EQ(
+        msg.joint_names.data[i].capacity,
+        micro_ros_utilities_memory_conf_default.max_string_capacity);
+      ASSERT_NE(msg.joint_names.data[i].data, nullptr);
+    }
+
+    allocated_memory = 0;
+    for (auto const & x : allocated_memory_map) {
+      allocated_memory += x.second;
+    }
+
+    ASSERT_EQ(allocated_memory, 0UL);
+  }
 }
