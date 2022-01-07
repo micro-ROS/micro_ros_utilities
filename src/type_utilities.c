@@ -181,7 +181,18 @@ size_t handle_string_sequence_memory(
     (conf.allocator == NULL) ?
     rcutils_get_default_allocator() : *conf.allocator;
 
-  const size_t string_capacity = conf.max_string_capacity;
+  size_t string_capacity = conf.max_string_capacity;
+
+  if (conf.n_rules > 0) {
+    for (size_t i = 0; i < conf.n_rules; i++) {
+      if (memcmp(conf.rules[i].rule, name_tree.data, name_tree.size - 1) == 0 &&
+        memcmp(conf.rules[i].rule + name_tree.size - 1, ".data", 5) == 0)
+      {
+        string_capacity = conf.rules[i].size;
+        break;
+      }
+    }
+  }
 
   size_t required_size = sequence_size * string_capacity;
 
