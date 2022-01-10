@@ -87,9 +87,9 @@ public:
     );
 
     bool ret = micro_ros_utilities_create_message_memory(
-        typesupport_,
-        msg,
-        conf_);
+      typesupport_,
+      msg,
+      conf_);
 
     if (override_allocators == nullptr) {
       EXPECT_EQ(allocated_memory() - initial_allocated_memory, size);
@@ -125,11 +125,11 @@ public:
     static_buffer_ = static_cast<uint8_t *>(malloc(size));
 
     return micro_ros_utilities_create_static_message_memory(
-        typesupport_,
-        msg,
-        conf_,
-        static_buffer_,
-        size);
+      typesupport_,
+      msg,
+      conf_,
+      static_buffer_,
+      size);
   }
 
   // Handle rules

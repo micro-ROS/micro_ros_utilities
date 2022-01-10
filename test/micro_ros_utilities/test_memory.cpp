@@ -168,7 +168,7 @@ TEST_F(MicroROSTypeUtilities, wrong_allocator) {
   typesupport_ = ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, MultiArrayLayout);
 
   rcutils_allocator_t wrong_allocator = {
-    [] (size_t,void *) -> void * {return nullptr;},
+    [](size_t, void *) -> void * {return nullptr;},
     deallocate,
     reallocate,
     zero_allocate,
