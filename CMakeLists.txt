@@ -67,7 +67,8 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   ament_add_gtest(${PROJECT_NAME}_test
-    test/micro_ros_utilities/test.cpp
+    test/micro_ros_utilities/test_memory.cpp
+    test/micro_ros_utilities/test_string.cpp
   )
 
   target_include_directories(${PROJECT_NAME}_test PRIVATE include src)
