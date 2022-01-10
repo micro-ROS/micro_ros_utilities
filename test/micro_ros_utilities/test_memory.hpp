@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MICRO_ROS_UTILITIES__TEST_HPP_
-#define MICRO_ROS_UTILITIES__TEST_HPP_
+#ifndef MICRO_ROS_UTILITIES__TEST_MEMORY_HPP_
+#define MICRO_ROS_UTILITIES__TEST_MEMORY_HPP_
 
 #include <gtest/gtest.h>
 
@@ -235,4 +235,4 @@ protected:
   size_t zero_allocate_count = 0;
 };
 
-#endif  // MICRO_ROS_UTILITIES__TEST_HPP_
+#endif  // MICRO_ROS_UTILITIES__TEST_MEMORY_HPP_

@@ -16,6 +16,8 @@
 
 #include <micro_ros_utilities/string_utilities.h>
 
+#include <string>
+
 TEST(Test, micro_ros_utilities_strings)
 {
   size_t size = 10;
