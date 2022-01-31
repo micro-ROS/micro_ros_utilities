@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "./test_memory.hpp"
-
+#include "test_memory.hpp"
 
 #include <std_msgs/msg/int32.h>
 #include <std_msgs/msg/multi_array_layout.h>
