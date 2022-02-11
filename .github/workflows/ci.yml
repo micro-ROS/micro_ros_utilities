@@ -29,13 +29,22 @@ jobs:
     - uses: actions/checkout@v2
     - uses: ros-tooling/setup-ros@0.2.1
       with:
+        use-ros2-testing: true
         required-ros-distributions: ${{ matrix.ros_distribution }}
+    - name : Download and install micro_ros_utilities dependecies
+      run: |
+        apt-get install ros-${{ matrix.ros_distribution }}-osrf-testing-tools-cpp
+        apt-get install -y ros-${{ matrix.ros_distribution }}-performance-test-fixture
     - uses : ros-tooling/action-ros-ci@0.2.1
       with:
         package-name: "micro_ros_utilities"
-        vcs-repo-file-url: dependencies.repos
         target-ros2-distro: ${{ matrix.ros_distribution }}
-        colcon-mixin-name: coverage-gcc
+        colcon-defaults: |
+          {
+            "build": {
+              "mixin": [ "coverage-gcc" ]
+            }
+          }
         colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
     - uses: codecov/codecov-action@v1
       with:
