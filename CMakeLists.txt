@@ -8,7 +8,7 @@ if(NOT CMAKE_C_STANDARD)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+  add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 #################################################
@@ -65,6 +65,8 @@ if(BUILD_TESTING)
   find_package(trajectory_msgs REQUIRED)
 
   ament_lint_auto_find_test_dependencies()
+
+  add_compile_options(-Werror)
 
   ament_add_gtest(${PROJECT_NAME}_test
     test/micro_ros_utilities/test_memory.cpp
