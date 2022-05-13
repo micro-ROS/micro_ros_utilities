@@ -72,7 +72,7 @@ typedef struct micro_ros_utilities_memory_conf_t
   size_t max_basic_type_sequence_capacity;
 
   /**
-   * All ruled defined in this configuration.
+   * All rules defined in this configuration.
    *
    */
   const micro_ros_utilities_memory_rule_t * rules;
