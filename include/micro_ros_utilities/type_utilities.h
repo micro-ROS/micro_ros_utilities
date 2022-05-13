@@ -99,7 +99,7 @@ static const micro_ros_utilities_memory_conf_t micro_ros_utilities_memory_conf_d
  */
 
 /**
- *  Returns a string with the type instronspection data
+ *  Returns a string with the type introspection data
  *
  * <hr>
  * Attribute          | Adherence
