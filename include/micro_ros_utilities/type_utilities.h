@@ -39,7 +39,7 @@ typedef struct micro_ros_utilities_memory_rule_t
   const char * rule;
 
   /**
-   * Memory (in bytes) to allocate for fields matching \ref rule.
+   * Maximum string or sequence capacity for fields matching \ref rule.
    *
    */
   size_t size;
