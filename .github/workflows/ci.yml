@@ -2,9 +2,9 @@ name: CI micro_ros_utilities
 
 on:
   push:
-    branches: [ main, galactic ]
+    branches: [ main, galactic, humble ]
   pull_request:
-    branches: [ main, galactic ]
+    branches: [ main, galactic, humble ]
   schedule:
     # Run once per day to detect broken dependencies.
     - cron: '33 6 * * *'
@@ -17,12 +17,14 @@ jobs:
       matrix:
         # os: [ ubuntu-20.04, windows-latest, macOS-latest ]
         os: [ ubuntu-20.04 ]
-        ros_distribution: [ rolling, galactic ]
+        ros_distribution: [ rolling, galactic, humble ]
         include:
           - docker_image: ubuntu:focal
             ros_distribution: rolling
           - docker_image: ubuntu:focal
             ros_distribution: galactic
+          - docker_image: ubuntu:jammy
+            ros_distribution: humble
     container:
       image: ${{ matrix.docker_image }}
     steps:
