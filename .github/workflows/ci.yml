@@ -15,9 +15,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # os: [ ubuntu-20.04, windows-latest, macOS-latest ]
-        os: [ ubuntu-20.04 ]
-        ros_distribution: [ rolling, galactic, humble ]
         include:
           - docker_image: ubuntu:focal
             ros_distribution: rolling
