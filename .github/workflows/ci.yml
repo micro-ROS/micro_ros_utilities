@@ -27,7 +27,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: ros-tooling/setup-ros@0.3.2
-    - uses: ros-tooling/action-ros-ci@0.2.1
+      with:
+        required-ros-distributions: ${{ matrix.ros_distribution }}
+    - uses : ros-tooling/action-ros-ci@0.2.1
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
