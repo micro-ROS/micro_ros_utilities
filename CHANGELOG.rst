@@ -2,8 +2,8 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2022-05-26)
+------------------
 * Fix humble CI (`#36 <https://github.com/micro-ROS/micro_ros_utilities/issues/36>`_)
 * Update CI for Humble
 * Fix struct doxygen doc (`#34 <https://github.com/micro-ROS/micro_ros_utilities/issues/34>`_) (`#35 <https://github.com/micro-ROS/micro_ros_utilities/issues/35>`_)
