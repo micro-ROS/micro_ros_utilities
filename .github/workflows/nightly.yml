@@ -1,4 +1,4 @@
-name: CI micro_ros_utilities
+name: Nightly
 
 on:
   push:
@@ -9,12 +9,10 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04 ]
-        ros_distribution: [ rolling, galactic, humble ]
         include:
           - docker_image: ubuntu:focal
             ros_distribution: rolling

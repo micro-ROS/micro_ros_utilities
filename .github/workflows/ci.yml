@@ -7,26 +7,18 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        # os: [ ubuntu-20.04, windows-latest, macOS-latest ]
-        os: [ ubuntu-20.04 ]
-        ros_distribution: [ rolling, galactic, humble ]
         include:
-          - docker_image: ubuntu:jammy
-            ros_distribution: humble
+          - docker_image: ubuntu:focal
+            ros_distribution: rolling
     container:
       image: ${{ matrix.docker_image }}
     steps:
-<<<<<<< HEAD
-    - uses: actions/checkout@v2
-    - uses: ros-tooling/setup-ros@0.2.1
-=======
     - uses: actions/checkout@v3
     - uses: ros-tooling/setup-ros@0.3.2
->>>>>>> fbb2248 (Modify CI approach (#41))
       with:
         use-ros2-testing: true
         required-ros-distributions: ${{ matrix.ros_distribution }}
