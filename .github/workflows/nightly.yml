@@ -1,27 +1,36 @@
 name: CI micro_ros_utilities
 
 on:
-  pull_request:
-    branches:
-      - '**'
+  push:
+    branches: [ main, galactic, humble ]
+  schedule:
+    # Run once per day to detect broken dependencies.
+    - cron: '33 6 * * *'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ ubuntu-20.04 ]
+        ros_distribution: [ rolling, galactic, humble ]
         include:
+          - docker_image: ubuntu:focal
+            ros_distribution: rolling
+          - docker_image: ubuntu:focal
+            ros_distribution: galactic
           - docker_image: ubuntu:jammy
             ros_distribution: humble
     container:
       image: ${{ matrix.docker_image }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@0.3.2
+    - uses: actions/checkout@v2
+    - uses: ros-tooling/setup-ros@0.2.1
       with:
+        use-ros2-testing: true
         required-ros-distributions: ${{ matrix.ros_distribution }}
-    - uses : ros-tooling/action-ros-ci@0.2.5
+    - uses : ros-tooling/action-ros-ci@0.2.1
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
