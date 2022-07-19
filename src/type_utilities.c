@@ -173,7 +173,8 @@ size_t handle_string_sequence_memory(
   const micro_ros_utilities_memory_conf_t conf,
   const size_t sequence_size,
   rosidl_runtime_c__String name_tree,
-  handle_message_memory_operation_t operation)
+  handle_message_memory_operation_t operation,
+  size_t string_upper_bound)
 {
   (void) name_tree;
 
@@ -181,7 +182,7 @@ size_t handle_string_sequence_memory(
     (conf.allocator == NULL) ?
     rcutils_get_default_allocator() : *conf.allocator;
 
-  size_t string_capacity = conf.max_string_capacity;
+  size_t string_capacity = (string_upper_bound != 0) ? string_upper_bound : conf.max_string_capacity;
 
   if (conf.n_rules > 0) {
     for (size_t i = 0; i < conf.n_rules; i++) {
@@ -248,7 +249,7 @@ size_t handle_message_memory(
 
   for (size_t i = 0; i < members->member_count_; i++) {
     rosidl_typesupport_introspection_c__MessageMember m = members->members_[i];
-    bool is_sequence = (m.is_array_) && (m.array_size_ == 0);
+    bool is_sequence = (m.is_array_) && (m.array_size_ == 0 || m.is_upper_bound_);
 
     if (m.type_id_ == TYPE_STRING && is_sequence) {
       m.type_id_ = TYPE_STRING_SEQUENCE;
@@ -277,7 +278,9 @@ size_t handle_message_memory(
         (m.type_id_ == TYPE_COMPOSED) ? rec_members->size_of_ :
         (m.type_id_ == TYPE_STRING_SEQUENCE) ?
         sizeof(generic_sequence_t) : basic_types_size[m.type_id_];
-      sequence_size = (m.type_id_ == TYPE_COMPOSED) ? conf.max_ros2_type_sequence_capacity :
+      sequence_size = (m.is_upper_bound_) ? m.array_size_ :
+        (m.type_id_ == TYPE_COMPOSED) ? conf.max_ros2_type_sequence_capacity :
+        (m.type_id_ == TYPE_STRING && m.string_upper_bound_ != 0) ? m.string_upper_bound_ :
         (m.type_id_ == TYPE_STRING) ? conf.max_string_capacity :
         conf.max_basic_type_sequence_capacity;
 
@@ -343,7 +346,7 @@ size_t handle_message_memory(
       generic_sequence_t * string_sequence = (generic_sequence_t *)((uint8_t *)ros_msg + m.offset_);
       used_memory += handle_string_sequence_memory(
         string_sequence, conf, sequence_size, name_tree,
-        operation);
+        operation, m.string_upper_bound_);
     }
 
     if ((m.type_id_ == TYPE_STRING || is_sequence) && operation == DESTROY_OPERATION) {
