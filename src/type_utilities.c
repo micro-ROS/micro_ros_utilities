@@ -182,7 +182,8 @@ size_t handle_string_sequence_memory(
     (conf.allocator == NULL) ?
     rcutils_get_default_allocator() : *conf.allocator;
 
-  size_t string_capacity = (string_upper_bound != 0) ? string_upper_bound : conf.max_string_capacity;
+  size_t string_capacity =
+    (string_upper_bound != 0) ? string_upper_bound : conf.max_string_capacity;
 
   if (conf.n_rules > 0) {
     for (size_t i = 0; i < conf.n_rules; i++) {
