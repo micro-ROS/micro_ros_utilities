@@ -2,8 +2,8 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+5.0.0 (2023-06-06)
+------------------
 * Deprecate galactic (`#52 <https://github.com/micro-ROS/micro_ros_utilities/issues/52>`_)
 * Handle sequence upper bounds (`#48 <https://github.com/micro-ROS/micro_ros_utilities/issues/48>`_) (`#50 <https://github.com/micro-ROS/micro_ros_utilities/issues/50>`_)
   * Take upper bounds into account
