@@ -2,8 +2,8 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.1 (2023-06-06)
+------------------
 * Handle sequence upper bounds (`#48 <https://github.com/micro-ROS/micro_ros_utilities/issues/48>`_)
   * Take upper bounds into account
   * Uncrusty
