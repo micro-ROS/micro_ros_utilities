@@ -2,8 +2,8 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.1 (2023-06-06)
+------------------
 * Update CI (`#51 <https://github.com/micro-ROS/micro_ros_utilities/issues/51>`_)
 * Handle sequence upper bounds (`#48 <https://github.com/micro-ROS/micro_ros_utilities/issues/48>`_) (`#50 <https://github.com/micro-ROS/micro_ros_utilities/issues/50>`_)
   * Take upper bounds into account
