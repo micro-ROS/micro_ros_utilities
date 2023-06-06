@@ -2,6 +2,19 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Handle sequence upper bounds (`#48 <https://github.com/micro-ROS/micro_ros_utilities/issues/48>`_)
+  * Take upper bounds into account
+  * Uncrusty
+* Fix nightly CI name (`#44 <https://github.com/micro-ROS/micro_ros_utilities/issues/44>`_)
+  * Fix nightly name
+  * Remove CI launch on push
+  * Update CI versions
+* Modify CI approach (`#41 <https://github.com/micro-ROS/micro_ros_utilities/issues/41>`_)
+* Fix snprintf type (`#38 <https://github.com/micro-ROS/micro_ros_utilities/issues/38>`_)
+* Contributors: Antonio Cuadros, Pablo Garrido
+
 3.0.0 (2022-05-26)
 ------------------
 * Fix humble CI (`#36 <https://github.com/micro-ROS/micro_ros_utilities/issues/36>`_)
