@@ -368,7 +368,7 @@ size_t handle_message_memory(
 size_t get_longest_member_name(
   const rosidl_typesupport_introspection_c__MessageMembers * members)
 {
-  size_t max_lenght = 0;
+  size_t max_length = 0;
 
   for (size_t i = 0; i < members->member_count_; i++) {
     rosidl_typesupport_introspection_c__MessageMember m = members->members_[i];
@@ -385,12 +385,12 @@ size_t get_longest_member_name(
     }
 
     size_t current_length = biggest_child_name + strlen(m.name_) + 1;
-    if (current_length > max_lenght) {
-      max_lenght = current_length;
+    if (current_length > max_length) {
+      max_length = current_length;
     }
   }
 
-  return max_lenght;
+  return max_length;
 }
 
 size_t micro_ros_utilities_get_dynamic_size(
