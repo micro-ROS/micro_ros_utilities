@@ -2,6 +2,19 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* get_longest_member_name: fix typo (`#58 <https://github.com/micro-ROS/micro_ros_utilities/issues/58>`_) (`#59 <https://github.com/micro-ROS/micro_ros_utilities/issues/59>`_)
+  (cherry picked from commit 74f7a6b08690079ecbb0262db563aa96f667277d)
+  Co-authored-by: G.A. vd. Hoorn <g.a.vanderhoorn@tudelft.nl>
+* Remove wrong image path (`#55 <https://github.com/micro-ROS/micro_ros_utilities/issues/55>`_) (`#57 <https://github.com/micro-ROS/micro_ros_utilities/issues/57>`_)
+  (cherry picked from commit 5f1cead35a1c4940db60e04e8a73c057ea2449b8)
+  Co-authored-by: Antonio Cuadros <49162117+Acuadros95@users.noreply.github.com>
+* Fix doxygen build (`#53 <https://github.com/micro-ROS/micro_ros_utilities/issues/53>`_) (`#54 <https://github.com/micro-ROS/micro_ros_utilities/issues/54>`_)
+  (cherry picked from commit 9a3e25638db7a4629f4976ad38f2ed9d62039183)
+  Co-authored-by: Antonio Cuadros <49162117+Acuadros95@users.noreply.github.com>
+* Contributors: mergify[bot]
+
 5.0.0 (2023-06-06)
 ------------------
 * Deprecate galactic (`#52 <https://github.com/micro-ROS/micro_ros_utilities/issues/52>`_)
