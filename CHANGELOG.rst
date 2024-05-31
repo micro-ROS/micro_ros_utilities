@@ -2,6 +2,13 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* get_longest_member_name: fix typo (`#58 <https://github.com/micro-ROS/micro_ros_utilities/issues/58>`_)
+* Remove wrong image path (`#55 <https://github.com/micro-ROS/micro_ros_utilities/issues/55>`_)
+* Fix doxygen build (`#53 <https://github.com/micro-ROS/micro_ros_utilities/issues/53>`_)
+* Contributors: Antonio Cuadros, G.A. vd. Hoorn
+
 4.0.1 (2023-06-06)
 ------------------
 * Update CI (`#51 <https://github.com/micro-ROS/micro_ros_utilities/issues/51>`_)
