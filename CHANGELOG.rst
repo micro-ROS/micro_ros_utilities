@@ -2,8 +2,8 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.2 (2024-05-31)
+------------------
 * get_longest_member_name: fix typo (`#58 <https://github.com/micro-ROS/micro_ros_utilities/issues/58>`_)
 * Remove wrong image path (`#55 <https://github.com/micro-ROS/micro_ros_utilities/issues/55>`_)
 * Fix doxygen build (`#53 <https://github.com/micro-ROS/micro_ros_utilities/issues/53>`_)
