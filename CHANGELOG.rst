@@ -2,8 +2,8 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+5.0.1 (2024-05-31)
+------------------
 * get_longest_member_name: fix typo (`#58 <https://github.com/micro-ROS/micro_ros_utilities/issues/58>`_) (`#59 <https://github.com/micro-ROS/micro_ros_utilities/issues/59>`_)
   (cherry picked from commit 74f7a6b08690079ecbb0262db563aa96f667277d)
   Co-authored-by: G.A. vd. Hoorn <g.a.vanderhoorn@tudelft.nl>
