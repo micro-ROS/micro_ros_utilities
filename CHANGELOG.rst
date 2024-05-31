@@ -2,6 +2,16 @@
 Changelog for package micro_ros_utilities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* get_longest_member_name: fix typo (`#58 <https://github.com/micro-ROS/micro_ros_utilities/issues/58>`_) (`#60 <https://github.com/micro-ROS/micro_ros_utilities/issues/60>`_)
+  (cherry picked from commit 74f7a6b08690079ecbb0262db563aa96f667277d)
+  Co-authored-by: G.A. vd. Hoorn <g.a.vanderhoorn@tudelft.nl>
+* Remove wrong image path (`#55 <https://github.com/micro-ROS/micro_ros_utilities/issues/55>`_) (`#56 <https://github.com/micro-ROS/micro_ros_utilities/issues/56>`_)
+  (cherry picked from commit 5f1cead35a1c4940db60e04e8a73c057ea2449b8)
+  Co-authored-by: Antonio Cuadros <49162117+Acuadros95@users.noreply.github.com>
+* Contributors: mergify[bot]
+
 3.0.1 (2023-06-06)
 ------------------
 * Handle sequence upper bounds (`#48 <https://github.com/micro-ROS/micro_ros_utilities/issues/48>`_)
