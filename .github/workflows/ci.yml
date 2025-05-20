@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - '**'
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Manual trigger"
 
 jobs:
   build:
@@ -12,16 +16,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - docker_image: ubuntu:jammy
+          - docker_image: ubuntu:24.04
             ros_distribution: rolling
     container:
       image: ${{ matrix.docker_image }}
     steps:
     - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@0.6.2
+    - uses: ros-tooling/setup-ros@0.7.7
       with:
         required-ros-distributions: ${{ matrix.ros_distribution }}
-    - uses : ros-tooling/action-ros-ci@0.3.2
+    - uses : ros-tooling/action-ros-ci@0.3.13
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
