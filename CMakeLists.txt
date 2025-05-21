@@ -77,11 +77,11 @@ if(BUILD_TESTING)
   target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
   target_link_libraries(${PROJECT_NAME}_test
     rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
-    rosidl_generator_c::rosidl_generator_c
+    ${rosidl_generator_c_LIBRARIES}
     rosidl_runtime_c::rosidl_runtime_c
     rcutils::rcutils
-    std_msgs::std_msgs
-    trajectory_msgs::trajectory_msgs
+    ${std_msgs_TARGETS}
+    ${trajectory_msgs_TARGETS}
   )
 endif()
 
