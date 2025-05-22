@@ -36,10 +36,10 @@ target_include_directories(${PROJECT_NAME}
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
 
-ament_target_dependencies(${PROJECT_NAME}
-  rosidl_typesupport_introspection_c
-  rosidl_runtime_c
-  rcutils
+target_link_libraries(${PROJECT_NAME}
+  rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+  rosidl_runtime_c::rosidl_runtime_c
+  rcutils::rcutils
 )
 
 #################################################
@@ -75,13 +75,13 @@ if(BUILD_TESTING)
 
   target_include_directories(${PROJECT_NAME}_test PRIVATE include src)
   target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
-  ament_target_dependencies(${PROJECT_NAME}_test
-    rosidl_typesupport_introspection_c
-    rosidl_generator_c
-    rosidl_runtime_c
-    rcutils
-    std_msgs
-    trajectory_msgs
+  target_link_libraries(${PROJECT_NAME}_test
+    rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+    ${rosidl_generator_c_LIBRARIES}
+    rosidl_runtime_c::rosidl_runtime_c
+    rcutils::rcutils
+    ${std_msgs_TARGETS}
+    ${trajectory_msgs_TARGETS}
   )
 endif()
 
