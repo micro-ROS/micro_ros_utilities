@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -22,17 +22,10 @@ jobs:
       image: ${{ matrix.docker_image }}
     steps:
     - uses: actions/checkout@v3
-<<<<<<< HEAD
-    - uses: ros-tooling/setup-ros@0.3.2
-      with:
-        required-ros-distributions: ${{ matrix.ros_distribution }}
-    - uses : ros-tooling/action-ros-ci@0.2.5
-=======
     - uses: ros-tooling/setup-ros@0.7.13
       with:
         required-ros-distributions: ${{ matrix.ros_distribution }}
     - uses : ros-tooling/action-ros-ci@0.4.3
->>>>>>> be7d012 (Bump setup-ros, action-ros-ci, and Ubuntu versions (#62))
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
