@@ -12,16 +12,28 @@ jobs:
       fail-fast: false
       matrix:
         include:
+<<<<<<< HEAD
           - docker_image: ubuntu:jammy
             ros_distribution: humble
+=======
+          - docker_image: ubuntu:24.04
+            ros_distribution: rolling
+>>>>>>> be7d012 (Bump setup-ros, action-ros-ci, and Ubuntu versions (#62))
     container:
       image: ${{ matrix.docker_image }}
     steps:
     - uses: actions/checkout@v3
+<<<<<<< HEAD
     - uses: ros-tooling/setup-ros@0.3.2
       with:
         required-ros-distributions: ${{ matrix.ros_distribution }}
     - uses : ros-tooling/action-ros-ci@0.2.5
+=======
+    - uses: ros-tooling/setup-ros@0.7.13
+      with:
+        required-ros-distributions: ${{ matrix.ros_distribution }}
+    - uses : ros-tooling/action-ros-ci@0.4.3
+>>>>>>> be7d012 (Bump setup-ros, action-ros-ci, and Ubuntu versions (#62))
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
