@@ -18,12 +18,12 @@ jobs:
         include:
           - docker_image: ubuntu:24.04
             ros_distribution: rolling
-          - docker_image: ubuntu:jammy
-            ros_distribution: iron
-          - docker_image: ubuntu:jammy
-            ros_distribution: humble
+          - docker_image: ubuntu:24.04
+            ros_distribution: kilted
           - docker_image: ubuntu:24.04
             ros_distribution: jazzy
+          - docker_image: ubuntu:jammy
+            ros_distribution: humble
     container:
       image: ${{ matrix.docker_image }}
     steps:
