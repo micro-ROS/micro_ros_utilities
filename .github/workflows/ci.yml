@@ -13,7 +13,7 @@ jobs:
       matrix:
         include:
           - docker_image: ubuntu:24.04
-            ros_distribution: rolling
+            ros_distribution: jazzy
     container:
       image: ${{ matrix.docker_image }}
     steps:
