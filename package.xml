@@ -4,7 +4,8 @@
   <name>micro_ros_utilities</name>
   <version>5.0.1</version>
   <description>A set of utility functions designed for micro-ROS</description>
-  <maintainer email="pablogarrido@eprosima.com">Pablo Garrido</maintainer>
+  <maintainer email="eugeniocollado@eprosima.com">Eugenio Collado</maintainer>
+  <maintainer email="carlosespinoza@eprosima.com">Carlos Espinoza</maintainer>
   <license>Apache License 2.0</license>
 
   <depend>rosidl_typesupport_introspection_c</depend>
