@@ -52,8 +52,8 @@ jobs:
       working-directory: ros_ws
       run: |
         . /opt/ros/${{ matrix.ros_distribution }}/setup.sh
-        colcon lcov-result --initial --lcov-args " --ignore-errors" mismatch
-        colcon lcov-result --packages-select micro_ros_utilities --verbose --lcov-args " --ignore-errors" mismatch
+        colcon lcov-result --initial --lcov-args="--ignore-errors=mismatch"
+        colcon lcov-result --packages-select micro_ros_utilities --verbose --lcov-args="--ignore-errors=mismatch"
 
     - run: apt-get update && apt-get install -y gnupg # Needed for codecov action
 
