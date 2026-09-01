@@ -21,11 +21,12 @@ jobs:
     container:
       image: ${{ matrix.docker_image }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@0.7.13
+    #- run: apt-get update && apt-get install -y curl gnupg
+    - uses: actions/checkout@v7
+    - uses: ros-tooling/setup-ros@0.7.19
       with:
         required-ros-distributions: ${{ matrix.ros_distribution }}
-    - uses : ros-tooling/action-ros-ci@0.4.3
+    - uses : ros-tooling/action-ros-ci@0.4.8
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
@@ -36,6 +37,9 @@ jobs:
             }
           }
         colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
-    - uses: codecov/codecov-action@v1
+    - uses: codecov/codecov-action@v5
       with:
-        file: ros_ws/lcov/total_coverage.info
+        files: ros_ws/lcov/total_coverage.info
+        disable_search: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
