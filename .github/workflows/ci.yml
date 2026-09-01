@@ -18,18 +18,22 @@ jobs:
         include:
           - docker_image: ubuntu:24.04
             ros_distribution: kilted
+
     container:
       image: ${{ matrix.docker_image }}
+
     steps:
-    #- run: apt-get update && apt-get install -y curl gnupg
     - uses: actions/checkout@v7
+
     - uses: ros-tooling/setup-ros@0.7.19
       with:
         required-ros-distributions: ${{ matrix.ros_distribution }}
+
     - uses : ros-tooling/action-ros-ci@0.4.8
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
+        coverage-result: false
         colcon-defaults: |
           {
             "build": {
@@ -37,6 +41,16 @@ jobs:
             }
           }
         colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
+
+    - name: Coverage results
+      working-directory: ros_ws
+      run: |
+        . /opt/ros/${{ matrix.ros_distribution }}/setup.sh
+        colcon lcov-result --initial --lcov-args " --ignore-errors" mismatch
+        colcon lcov-result --packages-select micro_ros_utilities --verbose --lcov-args " --ignore-errors" mismatch
+
+    - run: apt-get update && apt-get install -y gnupg # Needed for codecov action
+
     - uses: codecov/codecov-action@v5
       with:
         files: ros_ws/lcov/total_coverage.info
