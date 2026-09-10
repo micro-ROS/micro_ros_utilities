@@ -52,25 +52,26 @@ jobs:
         colcon lcov-result --initial --lcov-args="--ignore-errors=mismatch"
         colcon lcov-result --packages-select micro_ros_utilities --verbose --lcov-args="--ignore-errors=mismatch"
 
-        echo "=============== LCOV version ==========================================================="
+        printf '\n%s\n' "=============== LCOV version ==========================================================="
         lcov --version
 
-        echo "\n=============== Check that the coverage report exists and is non-empty ==============="
+        printf '\n%s\n' "=============== Check that the coverage report exists and is non-empty ==============="
         test -s lcov/total_coverage.info
 
-        echo "\n=============== Keep coverage for library source and headers ========================="
-        lcov --branch-coverage --extract lcov/total_coverage.info \
+        printf '\n%s\n' "=============== Keep coverage for library source and headers ========================="
+        # Headers may have no instrumented code, leaving their pattern unused.
+        lcov --branch-coverage --ignore-errors unused --extract lcov/total_coverage.info \
           '*/micro_ros_utilities/src/*' \
           '*/micro_ros_utilities/include/*' \
           --output-file lcov/micro_ros_utilities_coverage.info
 
-        echo "\n=============== Check that the library coverage report exists and is non-empty ======="
+        printf '\n%s\n' "=============== Check that the library coverage report exists and is non-empty ======="
         test -s lcov/micro_ros_utilities_coverage.info
 
-        echo "\n=============== Library coverage summary, including branches ========================="
+        printf '\n%s\n' "=============== Library coverage summary, including branches ========================="
         lcov --branch-coverage --summary lcov/micro_ros_utilities_coverage.info
 
-        echo "\n=============== Source files included in the coverage upload (SF records) ============"
+        printf '\n%s\n' "=============== Source files included in the coverage upload (SF records) ============"
         grep '^SF:' lcov/micro_ros_utilities_coverage.info
 
     - run: apt-get update && apt-get install -y gnupg # Needed for codecov action
