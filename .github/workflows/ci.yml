@@ -48,23 +48,36 @@ jobs:
       working-directory: ros_ws
       run: |
         . /opt/ros/${{ matrix.ros_distribution }}/setup.sh
+
         colcon lcov-result --initial --lcov-args="--ignore-errors=mismatch"
         colcon lcov-result --packages-select micro_ros_utilities --verbose --lcov-args="--ignore-errors=mismatch"
 
-        echo "===== Check that the coverage report exists and is non-empty ====="
+        echo "=============== LCOV version ==========================================================="
+        lcov --version
+
+        echo "\n=============== Check that the coverage report exists and is non-empty ==============="
         test -s lcov/total_coverage.info
 
-        echo "===== Overall coverage summary ====="
-        lcov --summary lcov/total_coverage.info
+        echo "\n=============== Keep coverage for library source and headers ========================="
+        lcov --branch-coverage --extract lcov/total_coverage.info \
+          '*/micro_ros_utilities/src/*' \
+          '*/micro_ros_utilities/include/*' \
+          --output-file lcov/micro_ros_utilities_coverage.info
 
-        echo "===== Coverage breakdown by file ====="
-        lcov --list lcov/total_coverage.info
+        echo "\n=============== Check that the library coverage report exists and is non-empty ======="
+        test -s lcov/micro_ros_utilities_coverage.info
+
+        echo "\n=============== Library coverage summary, including branches ========================="
+        lcov --branch-coverage --summary lcov/micro_ros_utilities_coverage.info
+
+        echo "\n=============== Source files included in the coverage upload (SF records) ============"
+        grep '^SF:' lcov/micro_ros_utilities_coverage.info
 
     - run: apt-get update && apt-get install -y gnupg # Needed for codecov action
 
     - uses: codecov/codecov-action@v5
       with:
-        files: ros_ws/lcov/total_coverage.info
+        files: ros_ws/lcov/micro_ros_utilities_coverage.info
         disable_search: true
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
