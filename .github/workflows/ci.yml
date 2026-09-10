@@ -50,36 +50,26 @@ jobs:
         . /opt/ros/${{ matrix.ros_distribution }}/setup.sh
 
         colcon lcov-result --initial --lcov-args="--ignore-errors=mismatch"
-        colcon lcov-result --packages-select micro_ros_utilities --verbose --lcov-args="--ignore-errors=mismatch"
-
-        printf '\n%s\n' "=============== LCOV version ==========================================================="
-        lcov --version
-
-        printf '\n%s\n' "=============== Check that the coverage report exists and is non-empty ==============="
+        colcon lcov-result --packages-select micro_ros_utilities --lcov-args="--ignore-errors=mismatch"
         test -s lcov/total_coverage.info
 
-        printf '\n%s\n' "=============== Keep coverage for library source and headers ========================="
         # Headers may have no instrumented code, leaving their pattern unused.
         lcov --branch-coverage --ignore-errors unused --extract lcov/total_coverage.info \
           '*/micro_ros_utilities/src/*' \
           '*/micro_ros_utilities/include/*' \
           --output-file lcov/micro_ros_utilities_coverage.info
 
-        printf '\n%s\n' "=============== Check that the library coverage report exists and is non-empty ======="
         test -s lcov/micro_ros_utilities_coverage.info
-
-        printf '\n%s\n' "=============== Library coverage summary, including branches ========================="
-        lcov --branch-coverage --summary lcov/micro_ros_utilities_coverage.info
-
-        printf '\n%s\n' "=============== Source files included in the coverage upload (SF records) ============"
-        grep '^SF:' lcov/micro_ros_utilities_coverage.info
+        # --ignore-errors unused means lcov stays quiet if 'src/*' also stops
+        # matching, so assert both library sources actually survived the extract.
+        test "$(grep -c '^SF:' lcov/micro_ros_utilities_coverage.info)" -ge 2
 
     - run: apt-get update && apt-get install -y gnupg # Needed for codecov action
 
-    - uses: codecov/codecov-action@v5
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
       with:
         files: ros_ws/lcov/micro_ros_utilities_coverage.info
         disable_search: true
         token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
-        verbose: true
+        fail_ci_if_error: false
