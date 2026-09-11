@@ -7,37 +7,25 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - docker_image: ubuntu:focal
+          - docker_image: ubuntu:24.04
             ros_distribution: rolling
-<<<<<<< HEAD
-          - docker_image: ubuntu:focal
-            ros_distribution: galactic
-=======
           - docker_image: ubuntu:26.04
             ros_distribution: lyrical
           - docker_image: ubuntu:24.04
             ros_distribution: kilted
           - docker_image: ubuntu:24.04
             ros_distribution: jazzy
->>>>>>> 383fc6d (Update CI (#71))
           - docker_image: ubuntu:jammy
             ros_distribution: humble
     container:
       image: ${{ matrix.docker_image }}
 
     steps:
-<<<<<<< HEAD
-    - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@0.3.2
-      with:
-        required-ros-distributions: ${{ matrix.ros_distribution }}
-    - uses : ros-tooling/action-ros-ci@0.2.5
-=======
     - uses: actions/checkout@v7
 
     - uses: ros-tooling/setup-ros@0.7.19
@@ -45,7 +33,6 @@ jobs:
         required-ros-distributions: ${{ matrix.ros_distribution }}
 
     - uses : ros-tooling/action-ros-ci@0.4.8
->>>>>>> 383fc6d (Update CI (#71))
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
