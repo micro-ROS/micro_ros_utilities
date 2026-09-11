@@ -3,7 +3,7 @@ name: CI micro_ros_utilities
 on:
   push:
     branches:
-      - rolling
+      - kilted
   pull_request:
     branches:
       - '**'

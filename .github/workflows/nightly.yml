@@ -18,11 +18,8 @@ jobs:
         include:
           - docker_image: ubuntu:24.04
             ros_distribution: rolling
-<<<<<<< HEAD
-=======
           - docker_image: ubuntu:26.04
             ros_distribution: lyrical
->>>>>>> 383fc6d (Update CI (#71))
           - docker_image: ubuntu:24.04
             ros_distribution: kilted
           - docker_image: ubuntu:24.04
