@@ -1,13 +1,16 @@
 name: CI micro_ros_utilities
 
 on:
+  push:
+    branches:
+      - humble
   pull_request:
     branches:
       - '**'
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -16,22 +19,16 @@ jobs:
             ros_distribution: humble
     container:
       image: ${{ matrix.docker_image }}
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@0.7.13
+    - uses: actions/checkout@v7
+
+    - uses: ros-tooling/setup-ros@0.7.19
       with:
         required-ros-distributions: ${{ matrix.ros_distribution }}
-    - uses : ros-tooling/action-ros-ci@0.4.3
+
+    - uses : ros-tooling/action-ros-ci@0.4.8
       with:
         package-name: "micro_ros_utilities"
         target-ros2-distro: ${{ matrix.ros_distribution }}
-        colcon-defaults: |
-          {
-            "build": {
-              "mixin": [ "coverage-gcc" ]
-            }
-          }
-        colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
-    - uses: codecov/codecov-action@v1
-      with:
-        file: ros_ws/lcov/total_coverage.info
+        coverage-result: false
